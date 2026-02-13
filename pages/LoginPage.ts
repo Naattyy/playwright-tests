@@ -5,12 +5,14 @@ export class LoginPage {
     userNameInput: Locator;
     passwordInput: Locator;
     loginButton: Locator;
+    invalidCredentialsErrorMessage: Locator;
 
     constructor(page: Page) {
         this.page = page;
         this.userNameInput = page.locator('.login-form-input[name="username"]');
         this.passwordInput = page.locator('.login-form-input[name="password"]');
         this.loginButton = page.locator('.login-form-button');
+        this.invalidCredentialsErrorMessage = page.locator("//p[text()='Nesprávne meno alebo heslo']");
     }
 
     async gotoLoginPage() {
