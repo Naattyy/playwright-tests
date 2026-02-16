@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { Locator, Page, expect } from '@playwright/test';
 
 export class CustomersPage {
   page: Page;
@@ -8,6 +8,7 @@ export class CustomersPage {
   birthDateInput: Locator;
   idInput: Locator;
   saveButton: Locator;
+  streetInput: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -17,6 +18,7 @@ export class CustomersPage {
     this.birthDateInput = page.getByLabel('Dátum narodenia');
     this.idInput = page.getByLabel('ID dokladu *');
     this.saveButton = page.getByRole('button', { name: 'ULOŽIŤ A ZAVRIEŤ' });
+    this.streetInput = page.locator('input#tpdStreet');
   }
 
   async clickAddCustomer() {
@@ -38,4 +40,25 @@ export class CustomersPage {
   async saveCustomer() {
     await this.saveButton.click();
   }
+
+  async openCustomerByName(name: string) {
+    const row = this.page.locator('tr', { hasText: name });
+  
+    await row.hover();
+    await row.click();
+  }
+
+  async editStreet(street: string) {
+    const input = this.page.getByLabel('Ulica');
+  
+    await input.click();        
+    await input.fill('Kamenná');       
+    await input.pressSequentially(street); 
+    await input.press('Tab');   
+  }
+
+  async expectStreetValue(street: string) {
+    await expect(this.streetInput).toHaveValue(street);
+  }
+
 }

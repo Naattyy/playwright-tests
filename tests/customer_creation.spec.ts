@@ -21,3 +21,24 @@ test('Create new customer', async ({ page }) => {
   );
   await page.getByRole('button', { name: 'ULOŽIŤ A ZAVRIEŤ' }).click();
 });
+
+test.only('Edit existing customer - update street', async ({ page }) => {
+
+  const loginPage = new LoginPage(page);
+  const customersPage = new CustomersPage(page);
+
+  await loginPage.gotoLoginPage();
+  await loginPage.login();
+
+  await page.getByRole('heading', { name: 'Zákazníci' }).click();
+  await page.getByRole('link', { name: 'Preukazy', exact: true }).click();
+
+  await customersPage.openCustomerByName('KASAJ');
+
+  await customersPage.editStreet('Kamenná');
+
+  await expect(customersPage.saveButton).toBeEnabled({ timeout: 10000 });
+
+  await customersPage.saveButton.click();
+
+});
