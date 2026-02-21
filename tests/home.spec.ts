@@ -1,10 +1,6 @@
-import { test, expect } from '@playwright/test';
-import { LoginPage } from '../pages/LoginPage';
-import { HomePage } from '../pages/HomePage';
+import test, { expect } from '../fixtures/basePages';
 
-test('Verify home title', async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    const homePage = new HomePage(page);
+test('Verify home title', async ({ page, loginPage, homePage }) => {
     await loginPage.gotoLoginPage();
     await loginPage.login();
     await expect(homePage.title).toBeVisible();

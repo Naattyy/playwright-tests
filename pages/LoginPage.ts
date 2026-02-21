@@ -12,11 +12,11 @@ export class LoginPage {
         this.userNameInput = page.locator('.login-form-input[name="username"]');
         this.passwordInput = page.locator('.login-form-input[name="password"]');
         this.loginButton = page.locator('.login-form-button');
-        this.invalidCredentialsErrorMessage = page.locator("//p[text()='Nesprávne meno alebo heslo']");
+        this.invalidCredentialsErrorMessage = page.locator('div.alert-box');
     }
 
     async gotoLoginPage() {
-        await this.page.goto('https://dockerdev.prosoft.sk:8083/index.html');
+        await this.page.goto('https://cipkartadmin-dev.kube8s.prosoft.sk/index.html');
     }
 
     async enterValidUsername() {

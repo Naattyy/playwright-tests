@@ -1,14 +1,14 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-export class CustomersPage {
+export class EmployeesPage {
   page: Page;
   addButton: Locator;
   lastNameInput: Locator;
   firstNameInput: Locator;
   birthDateInput: Locator;
-  idInput: Locator;
+  birthCertificate: Locator;
+  newTitleInput: Locator;
   saveButton: Locator;
-  streetInput: Locator;
   deleteButton: Locator;
   confirmDeleteButton: Locator;
 
@@ -17,61 +17,62 @@ export class CustomersPage {
     this.addButton = page.getByTestId('AddIcon');
     this.lastNameInput = page.getByLabel('Priezvisko *');
     this.firstNameInput = page.getByLabel('Meno *');
-    this.birthDateInput = page.locator('#tpdBirthdate');
-    this.idInput = page.getByLabel('ID dokladu *');
+    this.birthDateInput = page.locator('#prdBirthdate');
+    this.birthCertificate = page.locator('#prdHoldId');
+    this.newTitleInput = page.locator('#prdTitleBefore');
     this.saveButton = page.getByRole('button', { name: 'ULOŽIŤ A ZAVRIEŤ' });
-    this.streetInput = page.locator('#tpdStreet');
-    this.deleteButton = page.getByRole('button').filter({ has: page.getByTestId('DeleteIcon') });
+    this.deleteButton = page.getByRole('button').filter({ has: page.getByTestId('DeleteIcon') });    
     this.confirmDeleteButton = page.getByRole('button', { name: 'ZMAZAŤ' });
   }
 
-  async clickAddCustomer() {
+  async clickAddEmployee() {
     await this.addButton.click();
   }
 
-  async fillCustomerForm(
-    lastName: string,
+  async fillEmployeeForm(
+    birthCertificate: string,
     firstName: string,
+    lastName: string,
     birthDate: string,
-    id: string
   ) {
-    await this.lastNameInput.fill(lastName);
+    await this.birthCertificate.fill(birthCertificate);
     await this.firstNameInput.fill(firstName);
+    await this.lastNameInput.fill(lastName);
     await this.birthDateInput.click();
     await this.birthDateInput.pressSequentially(birthDate, { delay: 50 });
     await this.birthDateInput.press('Tab');
-    await this.idInput.fill(id);
   }
 
-  async saveCustomer() {
+  async saveEmployee() {
+    await expect(this.saveButton).toBeEnabled();
     await this.saveButton.click();
   }
 
-  async openCustomerByName(name: string) {
-    const row = this.page.locator('tr', { hasText: name });  
+  async openEmployeeByName(name: string) {
+    const row = this.page.locator('tr', { hasText: name });
     await row.hover();
     await row.click();
 
     await this.page.waitForTimeout(500);
   }
 
-  async editStreet(street: string) { 
-    await this.streetInput.waitFor({ state: 'visible' });
+  async editTitleBeforeName(title: string) {
+      await this.newTitleInput.waitFor({ state: 'visible' });
 
-    console.log(await this.streetInput.isEditable());
-    await expect(this.streetInput).toBeEditable();
+      console.log(await this.newTitleInput.isEditable());
+      await expect(this.newTitleInput).toBeEditable();
     
-    await this.streetInput.click();
-    await this.page.keyboard.insertText(street);
-    await this.streetInput.blur();
+      await this.newTitleInput.click();
+      await this.page.keyboard.insertText(title);
+      await this.newTitleInput.blur();
   }
 
-  async expectEditStreetValue(title: string) {
-    await expect(this.streetInput).toHaveValue(title); 
+  async expectTitleBeforeNameValue(title: string) {
+    await expect(this.newTitleInput).toHaveValue(title);
   }
 
-  async deleteCustomerByNameOrId(name: string, personalId: string) {
-    await this.openCustomerByName(name);
+  async deleteEmployeeByNameOrId(name: string, personalId: string) {
+    await this.openEmployeeByName(name);
 
     await expect(this.deleteButton).toBeVisible();
     await this.deleteButton.click();
