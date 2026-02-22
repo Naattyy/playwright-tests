@@ -8,7 +8,7 @@ test.describe('Customers', () => {
   });
 
 
-  test('Create new customer', async ({ page, customersPage }) => {
+  test('TC_06_Create new customer', async ({ page, customersPage }) => {
       await page.getByRole('heading', { name: 'Zákazníci' }).click();
       await page.getByRole('link', { name: 'Preukazy', exact: true }).click();
 
@@ -31,7 +31,7 @@ test.describe('Customers', () => {
       await expect(page.locator('text=Mrkva')).toBeVisible();
   });
 
-  test('Edit existing customer - update street', async ({ page, customersPage }) => {
+  test('TC_07_Edit existing customer - update street', async ({ page, customersPage }) => {
       await page.getByRole('heading', { name: 'Zákazníci' }).click();
       await page.getByRole('link', { name: 'Preukazy', exact: true }).click();
 
@@ -61,7 +61,7 @@ test.describe('Customers', () => {
   });
 
 
-  test('Delete existing customer', async ({ page, customersPage }) => {
+  test('TC_08_Delete existing customer', async ({ page, customersPage }) => {
       await page.getByRole('heading', { name: 'Zákazníci' }).click();
       await page.getByRole('link', { name: 'Preukazy', exact: true }).click();
 
