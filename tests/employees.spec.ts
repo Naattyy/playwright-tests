@@ -7,7 +7,7 @@ test.describe('Employees', () => {
         await expect(page).toHaveURL('https://cipkartadmin-dev.kube8s.prosoft.sk/index.html#/rail/pass');
     });
 
-    test('TC_02_Create new employee', async ({ page, employeesPage }) => {       
+    test('TC_03_Create new employee', async ({ page, employeesPage }) => {       
         await employeesPage.clickAddEmployee();
 
         await employeesPage.fillEmployeeForm(
@@ -22,7 +22,7 @@ test.describe('Employees', () => {
         await expect(page.locator('text=Mrkvička')).toBeVisible();
     });
 
-    test('TC_03_Edit employee', async ({ page, employeesPage }) => {
+    test('TC_04_Edit employee', async ({ page, employeesPage }) => {
         await employeesPage.clickAddEmployee();
 
         await employeesPage.fillEmployeeForm(
@@ -44,7 +44,7 @@ test.describe('Employees', () => {
     });
 
 
-    test('TC_04_Delete employee', async ({ page, employeesPage }) => {
+    test('TC_05_Delete employee', async ({ page, employeesPage }) => {
         await employeesPage.clickAddEmployee();
 
         await employeesPage.fillEmployeeForm(
