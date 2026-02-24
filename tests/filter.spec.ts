@@ -16,4 +16,19 @@ test.describe('Filter', () => {
   
       await expect(page.getByText(rodneCislo, { exact: true })).toBeVisible();    
     });
+
+    test("TC_10 - Reset filters in ID cards list", async ({ page }) => {
+      const filterPage = new FilterPage(page);
+      const rodneCislo = "000101/123";
+
+      await filterPage.filterByRodneCislo(rodneCislo);
+      await filterPage.expectRodneCisloVisible(rodneCislo);
+  
+      await expect(filterPage.resetBtn).toBeVisible();
+      await filterPage.resetFilter();
+  
+      await expect(filterPage.resetBtn).not.toBeVisible();
+  
+    });
+
   });
