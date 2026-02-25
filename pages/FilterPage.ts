@@ -5,7 +5,6 @@ export class FilterPage {
   rodneCisloHeader: Locator;
   rodneCisloFilterIcon: Locator;
   resetBtn: Locator;
-  filterDialog: Locator;
   valueInput: Locator;
   applyFilterButton: Locator;
 
@@ -14,17 +13,19 @@ export class FilterPage {
     this.rodneCisloHeader = page.locator('div.table-header-td:has(h3:has-text("Rodné číslo"))');
     this.rodneCisloFilterIcon = this.rodneCisloHeader.locator('svg[data-testid="FilterAltIcon"]');
     this.resetBtn = page.locator('li', { hasText: 'Zrušiť filter' });
-    this.filterDialog = page.locator('[role="dialog"]');
-    this.valueInput = this.filterDialog.locator('#val1');
-    this.applyFilterButton = this.filterDialog.getByRole('button', { name: 'POUŽIŤ' });
+    this.valueInput = page.locator('#val1');
+    this.applyFilterButton = page.getByRole('button', { name: 'POUŽIŤ' });
   }
 
-
-  async filterByRodneCislo(value: string) {
+  async openRodneCisloFilter() {
     await this.rodneCisloHeader.first().hover();
     await this.rodneCisloFilterIcon.first().click();
-
     await expect(this.valueInput).toBeVisible();
+  }
+
+  async filterByRodneCislo(value: string) {
+    await this.openRodneCisloFilter();
+
     await this.valueInput.fill(value);
 
     await expect(this.applyFilterButton).toBeEnabled();
