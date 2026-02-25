@@ -11,6 +11,8 @@ export class EmployeesPage {
   saveButton: Locator;
   deleteButton: Locator;
   confirmDeleteButton: Locator;
+  exportButton: Locator;
+  confirmExportButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -23,6 +25,8 @@ export class EmployeesPage {
     this.saveButton = page.getByRole('button', { name: 'ULOŽIŤ A ZAVRIEŤ' });
     this.deleteButton = page.getByRole('button').filter({ has: page.getByTestId('DeleteIcon') });    
     this.confirmDeleteButton = page.getByRole('button', { name: 'ZMAZAŤ' });
+    this.exportButton = page.getByLabel('Export do csv');
+    this.confirmExportButton = page.getByRole('button', { name: 'EXPORTOVAŤ' });
   }
 
   async clickAddEmployee() {
@@ -81,6 +85,19 @@ export class EmployeesPage {
     await this.confirmDeleteButton.click();
 
     await expect(this.page.locator('tr', { hasText: personalId })).not.toBeVisible({ timeout: 5000 });
+  }
+
+  async exportCsv() {
+    await expect(this.exportButton).toBeVisible();
+  
+    const downloadPromise = this.page.waitForEvent('download');
+  
+    await this.exportButton.click();
+  
+    await expect(this.confirmExportButton).toBeVisible();
+    await this.confirmExportButton.click();
+  
+    return await downloadPromise;
   }
 
 }

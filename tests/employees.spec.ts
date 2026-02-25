@@ -60,4 +60,13 @@ test.describe('Employees', () => {
         await expect(page.locator('tr', { hasText: '123456/0000' })).not.toBeVisible();        
     }); 
 
+    test('TC_11_Export data', async ({ employeesPage }) => {
+
+      const download = await employeesPage.exportCsv();
+    
+      const fileName = download.suggestedFilename();
+    
+      expect(fileName).toMatch(/\.csv$/i);
+    });
+
 });
