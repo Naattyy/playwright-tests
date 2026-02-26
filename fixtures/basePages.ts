@@ -4,12 +4,14 @@ import { LoginPage } from '../pages/LoginPage';
 import { HomePage } from '../pages/HomePage';
 import { CustomersPage } from '../pages/CustomersPage';
 import { EmployeesPage } from '../pages/EmployeesPage';
+import { FilterPage } from '../pages/FilterPage';
 
 const test = baseTest.extend<{
     loginPage: LoginPage;
     homePage: HomePage;
     customersPage: CustomersPage;
     employeesPage: EmployeesPage;
+    filterPage: FilterPage;
 }>({
     loginPage: async ({ page }, use) => {
         await use(new LoginPage(page));
@@ -22,6 +24,9 @@ const test = baseTest.extend<{
     },
     employeesPage: async ({ page }, use) =>{
         await use(new EmployeesPage(page));
+    },
+    filterPage: async ({ page }, use) =>{
+        await use(new FilterPage(page));
     }
 });
 
