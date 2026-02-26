@@ -79,7 +79,7 @@ test.describe('Employees', () => {
       await employeesPage.expectEmployeeSelected('Vtáčik');
     });
 
-    test.only('TC_13_Unselect multiple ID cards', async ({ employeesPage }) => {
+    test('TC_13_Unselect multiple ID cards', async ({ employeesPage }) => {
 
       await employeesPage.toggleEmployeeByLastAndFirstName('Hraškova', 'Janka');
       await employeesPage.toggleEmployeeByLastAndFirstName('Pikachu', 'Pika');
