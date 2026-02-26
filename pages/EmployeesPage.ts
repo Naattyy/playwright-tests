@@ -13,6 +13,7 @@ export class EmployeesPage {
   confirmDeleteButton: Locator;
   exportButton: Locator;
   confirmExportButton: Locator;
+  selectedItemsInfo: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -27,6 +28,7 @@ export class EmployeesPage {
     this.confirmDeleteButton = page.getByRole('button', { name: 'ZMAZAŤ' });
     this.exportButton = page.getByLabel('Export do csv');
     this.confirmExportButton = page.getByRole('button', { name: 'EXPORTOVAŤ' });
+    this.selectedItemsInfo = page.getByText(/Vybraných položiek:/);
   }
 
   async clickAddEmployee() {
@@ -60,6 +62,7 @@ export class EmployeesPage {
     await this.page.waitForTimeout(500);
   }
 
+
   async editTitleBeforeName(title: string) {
       await this.newTitleInput.waitFor({ state: 'visible' });
 
@@ -75,6 +78,7 @@ export class EmployeesPage {
     await expect(this.newTitleInput).toHaveValue(title);
   }
 
+
   async deleteEmployeeByNameOrId(name: string, personalId: string) {
     await this.openEmployeeByName(name);
 
@@ -87,6 +91,7 @@ export class EmployeesPage {
     await expect(this.page.locator('tr', { hasText: personalId })).not.toBeVisible({ timeout: 5000 });
   }
 
+
   async exportCsv() {
     await expect(this.exportButton).toBeVisible();
   
@@ -98,6 +103,36 @@ export class EmployeesPage {
     await this.confirmExportButton.click();
   
     return await downloadPromise;
+  }
+
+
+  async selectEmployeeByName(name: string) {
+    const row = this.page.locator('tr', { hasText: name }).first();
+    await expect(row).toBeVisible();
+  
+    await row.locator('.MuiCheckbox-root').first().click();
+  }
+
+  async expectEmployeeSelected(name: string) {
+    const row = this.page.locator('tr', { hasText: name }).first();
+  
+    const checkedIcon = row.locator('[data-testid="CheckBoxIcon"]');
+  
+    await expect(checkedIcon).toBeVisible();
+  }
+
+
+  async toggleEmployeeByLastAndFirstName(lastName: string, firstName: string) {
+    const row = this.page.locator('tr', { hasText: lastName }).filter({ hasText: firstName }).first();
+  
+    await expect(row).toBeVisible({ timeout: 10000 });
+  
+    await row.locator('.MuiCheckbox-root').first().click();
+  }
+
+  async expectNoItemsSelected() {
+    await expect(this.selectedItemsInfo)
+      .toHaveText(/Vybraných položiek:\s*0\s*z\s*\d+/);
   }
 
 }

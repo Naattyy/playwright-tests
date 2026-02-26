@@ -69,4 +69,27 @@ test.describe('Employees', () => {
       expect(fileName).toMatch(/\.csv$/i);
     });
 
+    test('TC_12_Select multiple ID cards', async ({ employeesPage }) => {
+      await employeesPage.selectEmployeeByName('Hraškova');
+      await employeesPage.selectEmployeeByName('Pikachu');
+      await employeesPage.selectEmployeeByName('Vtáčik');
+    
+      await employeesPage.expectEmployeeSelected('Hraškova');
+      await employeesPage.expectEmployeeSelected('Pikachu');
+      await employeesPage.expectEmployeeSelected('Vtáčik');
+    });
+
+    test.only('TC_13_Unselect multiple ID cards', async ({ employeesPage }) => {
+
+      await employeesPage.toggleEmployeeByLastAndFirstName('Hraškova', 'Janka');
+      await employeesPage.toggleEmployeeByLastAndFirstName('Pikachu', 'Pika');
+      await employeesPage.toggleEmployeeByLastAndFirstName('VTÁČIK', 'LEONARD');
+    
+      await employeesPage.toggleEmployeeByLastAndFirstName('Hraškova', 'Janka');
+      await employeesPage.toggleEmployeeByLastAndFirstName('Pikachu', 'Pika');
+      await employeesPage.toggleEmployeeByLastAndFirstName('VTÁČIK', 'LEONARD');
+    
+      await employeesPage.expectNoItemsSelected();
+    });
+
 });
