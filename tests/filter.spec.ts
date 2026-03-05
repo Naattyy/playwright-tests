@@ -8,7 +8,7 @@ test.describe('Filter', () => {
     });
 
     test("TC_09 - Filtering ID cards", async ({ page, filterPage }) => {
-      const rodneCislo = "0909/223";
+      const rodneCislo = "000101/123";
   
       await filterPage.filterByRodneCislo(rodneCislo);
   
