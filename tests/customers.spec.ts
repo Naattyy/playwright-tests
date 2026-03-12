@@ -1,90 +1,35 @@
 import test, { expect } from '../fixtures/basePages';
+import { customersData } from '../data/customersData';
 
 test.describe('Customers', () => {
   test.beforeEach(async ({ loginPage, page }) => {
       await loginPage.gotoLoginPage();
       await loginPage.login();
-      await expect(page).toHaveURL('https://cipkartadmin-dev.kube8s.prosoft.sk/index.html#/rail/pass');
+      await expect(page).toHaveURL(/#\/rail\/pass$/);
   });
 
-
-  test('TC_06_Create new customer', async ({ page, customersPage }) => {
-      await page.getByRole('heading', { name: 'Zákazníci' }).click();
-      await page.getByRole('link', { name: 'Preukazy', exact: true }).click();
+  customersData.forEach((customer) => {
+    test(`${customer.testCaseId}_Create-Edit-Delete customer`, async ({ customersPage }) => {
+      await customersPage.gotoCustomersPage();
 
       await customersPage.clickAddCustomer();
-      
       await customersPage.fillCustomerForm(
-        'Mrkva',
-        'Ján',
-        '01.01.1990',
-        '98765432',
+        customer.lastName,
+        customer.firstName,
+        customer.birthDate,
+        customer.personalId
       );
-
       await customersPage.saveCustomer();
+      await customersPage.expectCustomerInTable(customer.lastName);
 
-      // Hľadanie a scrollovanie, kým sa nenájde
-      while ((await page.locator('tr', { hasText: 'Mrkva' }).count()) === 0) {
-      await page.locator('tr').last().scrollIntoViewIfNeeded();
-      }
-  
-      await expect(page.locator('text=Mrkva')).toBeVisible();
+      await customersPage.openCustomerByLastName(customer.lastName);
+      await customersPage.editStreet(customer.updatedStreet);
+      await customersPage.saveCustomer();
+      await customersPage.expectEditStreetValue(customer.updatedStreet);
+
+      await customersPage.resetFilter();
+      await customersPage.deleteCustomerByLastName(customer.lastName);
+      await customersPage.expectCustomerNotInTable(customer.lastName);
+    });
   });
-
-  test('TC_07_Edit existing customer - update street', async ({ page, customersPage }) => {
-      await page.getByRole('heading', { name: 'Zákazníci' }).click();
-      await page.getByRole('link', { name: 'Preukazy', exact: true }).click();
-
-      await customersPage.clickAddCustomer();
-
-      await customersPage.fillCustomerForm(
-        'Mrkvová', 
-        'Ivana',        
-        '22.02.1999',    
-        '4455667788' 
-      );
-
-      await customersPage.saveCustomer();
-
-      // Hľadanie a scrollovanie, kým sa nenájde
-      while ((await page.locator('tr', { hasText: 'Mrkvová' }).count()) === 0) {
-      await page.locator('tr').last().scrollIntoViewIfNeeded();
-      }
-
-      await page.locator('tr', { hasText: 'Mrkvová' }).first().click();
-
-      const street = 'Kamenná';
-      await customersPage.editStreet(street);
-      await customersPage.saveCustomer();
-      await customersPage.expectEditStreetValue(street);
-
-  });
-
-
-  test('TC_08_Delete existing customer', async ({ page, customersPage }) => {
-      await page.getByRole('heading', { name: 'Zákazníci' }).click();
-      await page.getByRole('link', { name: 'Preukazy', exact: true }).click();
-
-      await customersPage.clickAddCustomer();
-
-      await customersPage.fillCustomerForm(
-        'Mrkvička', 
-        'Milan',        
-        '11.11.2001',    
-        '00998811223' 
-      );
-
-      await customersPage.saveCustomer();
-
-      // Hľadanie a scrollovanie, kým sa nenájde
-      while ((await page.locator('tr', { hasText: 'Mrkvička' }).count()) === 0) {
-      await page.locator('tr').last().scrollIntoViewIfNeeded();
-      }
-    
-      await expect(page.locator('text=Mrkvička')).toBeVisible();
-
-      await customersPage.deleteCustomerByNameOrId('Milan', '00998811223');
-      await expect(page.locator('tr', { hasText: '00998811223' })).not.toBeVisible(); 
-  });
-  
-});  
+});

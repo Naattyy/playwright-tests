@@ -7,8 +7,9 @@ test.describe('Login', () => {
     })
 
     test('TC_01_Successful login', async ({ page, loginPage }) => {
+    await loginPage.gotoLoginPage();
     await loginPage.login();
-    await expect(page).toHaveURL('https://cipkartadmin-dev.kube8s.prosoft.sk/index.html#/rail/pass');
+    await expect(page).toHaveURL(/#\/rail\/pass$/);
     });
 
     test('TC_01.1_Cannot login with valid username and invalid password', async ({ page, loginPage }) => {
