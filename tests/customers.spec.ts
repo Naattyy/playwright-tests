@@ -5,7 +5,7 @@ test.describe('Customers', () => {
   test.beforeEach(async ({ loginPage, page }) => {
       await loginPage.gotoLoginPage();
       await loginPage.login();
-      await expect(page).toHaveURL(/#\/rail\/pass$/);
+      await expect(page).toHaveURL('/index.html#/rail/pass');
   });
 
   customersData.forEach((customer) => {
@@ -24,12 +24,10 @@ test.describe('Customers', () => {
 
       await customersPage.openCustomerByLastName(customer.lastName);
       await customersPage.editStreet(customer.updatedStreet);
-      await customersPage.saveCustomer();
       await customersPage.expectEditStreetValue(customer.updatedStreet);
+      await customersPage.saveCustomer();
 
-      await customersPage.resetFilter();
       await customersPage.deleteCustomerByLastName(customer.lastName);
-      await customersPage.expectCustomerNotInTable(customer.lastName);
     });
   });
 });

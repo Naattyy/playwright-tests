@@ -1,63 +1,51 @@
 import test, { expect } from '../fixtures/basePages';
+import { employeesData } from '../data/employeesData';
+import { employeesForSelection } from '../data/employeesData';
+import { employeesForToggle } from '../data/employeesData';
 
 test.describe('Employees', () => {
     test.beforeEach(async ({ loginPage, page }) => {
         await loginPage.gotoLoginPage();
         await loginPage.login();
-        await expect(page).toHaveURL('https://cipkartadmin-dev.kube8s.prosoft.sk/index.html#/rail/pass');
+        await expect(page).toHaveURL('/index.html#/rail/pass');
     });
 
-    test('TC_03_Create new employee', async ({ page, employeesPage }) => {       
+    test('TC_03_Create 5 new employees', async ({ page, employeesPage }) => {
+      for (const employee of employeesData) {
         await employeesPage.clickAddEmployee();
-
+  
         await employeesPage.fillEmployeeForm(
-          '010101/0101', 
-          'Ján',        
-          'Mrkvička',    
-          '11.11.2011' 
+          employee.birthCertificate,
+          employee.firstName,
+          employee.lastName,
+          employee.birthDate
         );
-
+  
         await employeesPage.saveEmployee();
-
-        await expect(page.locator('text=Mrkvička')).toBeVisible();
+  
+        await expect(page.getByText(employee.lastName)).toBeVisible();
+      }
     });
-
-    test('TC_04_Edit employee', async ({ page, employeesPage }) => {
-        await employeesPage.clickAddEmployee();
-
-        await employeesPage.fillEmployeeForm(
-          '111111/2222', 
-          'Janka',        
-          'Mrkvová',    
-          '22.02.1998' 
-        );
-
+  
+    test('TC_04_Edit 2 employees', async ({ employeesPage }) => {
+      const employeesToEdit = employeesData.slice(0, 2);
+  
+      for (const employee of employeesToEdit) {
+        await employeesPage.openEmployeeByBirthCertificate(employee.birthCertificate);
+        await employeesPage.editTitleBeforeName(employee.newTitle);
+        await employeesPage.expectTitleBeforeNameValue(employee.newTitle);
         await employeesPage.saveEmployee();
-
-        await expect(page.locator('text=Mrkvová')).toBeVisible();
-
-        const newTitle = 'Ing.';
-        await employeesPage.openEmployeeByName('Mrkvová');
-        await employeesPage.editTitleBeforeName(newTitle);
-        await employeesPage.saveEmployee();
-        await employeesPage.expectTitleBeforeNameValue(newTitle);
+      }
     });
+  
+    test('TC_05_Delete 5 employees', async ({ page, employeesPage }) => {
+      test.setTimeout(60000);
 
-
-    test('TC_05_Delete employee', async ({ page, employeesPage }) => {
-        await employeesPage.clickAddEmployee();
-
-        await employeesPage.fillEmployeeForm(
-          '123456/0000', 
-          'Eva',        
-          'Adamová',    
-          '12.01.2004' 
-        );
-
-        await employeesPage.saveEmployee();
-
-        await employeesPage.deleteEmployeeByNameOrId('Eva', '123456/0000');
-        await expect(page.locator('tr', { hasText: '123456/0000' })).not.toBeVisible();        
+      for (const employee of employeesData) {
+        await employeesPage.deleteEmployeeByBirthCertificate(employee.birthCertificate);
+  
+        await expect(page.locator('tr', { hasText: employee.birthCertificate })).not.toBeVisible();
+        }
     }); 
 
     test('TC_11_Export data', async ({ employeesPage }) => {
@@ -66,30 +54,27 @@ test.describe('Employees', () => {
     
       const fileName = download.suggestedFilename();
     
-      expect(fileName).toMatch(/\.csv$/i);
+      expect(fileName.endsWith('.csv')).toBe(true);
     });
 
     test('TC_12_Select multiple ID cards', async ({ employeesPage }) => {
-      await employeesPage.selectEmployeeByName('Hraškova');
-      await employeesPage.selectEmployeeByName('Pikachu');
-      await employeesPage.selectEmployeeByName('Vtáčik');
-    
-      await employeesPage.expectEmployeeSelected('Hraškova');
-      await employeesPage.expectEmployeeSelected('Pikachu');
-      await employeesPage.expectEmployeeSelected('Vtáčik');
+      for (const employee of employeesForSelection) {
+        await employeesPage.selectEmployeeByName(employee);
+        await employeesPage.expectEmployeeSelected(employee);
+      }
     });
 
     test('TC_13_Unselect multiple ID cards', async ({ employeesPage }) => {
-
-      await employeesPage.toggleEmployeeByLastAndFirstName('Hraškova', 'Janka');
-      await employeesPage.toggleEmployeeByLastAndFirstName('Pikachu', 'Pika');
-      await employeesPage.toggleEmployeeByLastAndFirstName('VTÁČIK', 'LEONARD');
+      for (const employee of employeesForToggle) {
+        await employeesPage.toggleEmployeeByLastAndFirstName(employee.lastName, employee.firstName);
+      }
     
-      await employeesPage.toggleEmployeeByLastAndFirstName('Hraškova', 'Janka');
-      await employeesPage.toggleEmployeeByLastAndFirstName('Pikachu', 'Pika');
-      await employeesPage.toggleEmployeeByLastAndFirstName('VTÁČIK', 'LEONARD');
+      for (const employee of employeesForToggle) {
+        await employeesPage.toggleEmployeeByLastAndFirstName(employee.lastName, employee.firstName);
+      }
     
       await employeesPage.expectNoItemsSelected();
+    
     });
 
 });

@@ -9,8 +9,6 @@ test('TC_02_Verify home title', async ({ page, loginPage, homePage }) => {
 test('TC_14_Log out user', async ({ page, loginPage, homePage }) => {
     await loginPage.gotoLoginPage();
     await loginPage.login();
-
     await homePage.logout();
-
-    await expect(page).toHaveURL('https://cipkartadmin-dev.kube8s.prosoft.sk/index.html#/login');
+    await expect(page).toHaveURL('index.html#/login');
 });

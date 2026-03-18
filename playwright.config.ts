@@ -30,7 +30,9 @@ export default defineConfig({
     browserName: 'chromium',
     ignoreHTTPSErrors: true,
     baseURL: 'https://cipkartadmin-dev.kube8s.prosoft.sk',
-
+    launchOptions: {
+      slowMo: 500
+    },
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },

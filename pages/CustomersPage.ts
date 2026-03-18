@@ -60,13 +60,14 @@ export class CustomersPage {
     await this.resetFilter();
   
     const customersHeading = this.page.getByRole('heading', { name: 'Zákazníci' });
-    const preukazyLink = this.page.getByRole('link', { name: 'Preukazy', exact: true });
+    const preukazyItem = this.page.locator('li:visible').filter({ hasText: 'Preukazy' }).first();
   
     await expect(customersHeading).toBeVisible({ timeout: 10000 });
     await customersHeading.click();
+    await this.page.waitForTimeout(300);
   
-    await expect(preukazyLink).toBeVisible({ timeout: 10000 });
-    await preukazyLink.click();
+    await expect(preukazyItem).toBeVisible({ timeout: 10000 });
+    await preukazyItem.click();
   }
 
   async saveCustomer() {
@@ -90,11 +91,9 @@ export class CustomersPage {
   }
 
 
-  async resetFilter() {
-    const resetButton = this.page.locator('li', { hasText: 'Zrušiť filter' });
-  
-    if (await resetButton.isVisible().catch(() => false)) {
-      await resetButton.click();
+  async resetFilter() {  
+   if (await this.resetBtn.isVisible().catch(() => false)) {
+      await this.resetBtn.click();
     }
 
     await this.page.keyboard.press('Escape').catch(() => {});
@@ -106,9 +105,7 @@ export class CustomersPage {
     await this.resetFilter();
     await this.filterByLastName(baseLastName);
   
-    await expect(
-      this.page.getByText(baseLastName, { exact: false }).first()
-    ).toBeVisible({ timeout: 10000 });
+    await expect(this.page.getByText(baseLastName, { exact: false }).first()).toBeVisible({ timeout: 10000 });
   }
   
   async openCustomerByLastName(lastName: string) {
@@ -117,9 +114,13 @@ export class CustomersPage {
     await this.resetFilter();
     await this.filterByLastName(baseLastName);
   
-    const cell = this.page.getByText(baseLastName, { exact: false }).first();
-    await expect(cell).toBeVisible({ timeout: 10000 });
-    await cell.click();
+    const row = this.page.locator('tr', {
+      has: this.page.locator('.table-body-td', { hasText: baseLastName })
+    }).first();
+  
+    await expect(row).toBeVisible({ timeout: 10000 });
+    await row.hover();
+    await row.click();
   }
 
   async editStreet(street: string) {
@@ -127,39 +128,36 @@ export class CustomersPage {
     await expect(this.streetInput).toBeEditable();
 
     await this.streetInput.click();
-    await this.streetInput.clear();
-    await this.page.keyboard.insertText(street);
-    await this.streetInput.blur();
+    await this.streetInput.fill(street);
+    await this.streetInput.press('Tab');
   }
 
   async expectEditStreetValue(value: string) {
     await expect(this.streetInput).toHaveValue(value);
   }
 
-  
   async deleteCustomerByLastName(lastName: string) {
-    await expect(this.deleteButton).toBeVisible();
+    await this.openCustomerByLastName(lastName);
+  
+    await expect(this.deleteButton).toBeVisible({ timeout: 10000 });
     await this.deleteButton.click();
   
-    await expect(this.confirmDeleteButton).toBeVisible();
+    await expect(this.confirmDeleteButton).toBeVisible({ timeout: 10000 });
     await this.confirmDeleteButton.click();
-  
-    await this.resetFilter();
-    await this.filterByLastName(lastName);
-  
-    await expect(
-      this.page.getByText(lastName, { exact: false }).first()
-    ).not.toBeVisible({ timeout: 10000 });
+
+    await this.expectCustomerNotInTable(lastName);
   }
-  
+
   async expectCustomerNotInTable(lastName: string) {
     const baseLastName = lastName.split('_')[0];
-  
+
     await this.resetFilter();
     await this.filterByLastName(baseLastName);
-  
-    await expect(
-      this.page.getByText(baseLastName, { exact: false }).first()
-    ).not.toBeVisible({ timeout: 10000 });
+
+    const row = this.page.locator('.table-body-td', { hasText: baseLastName });
+
+    await expect(row).toBeHidden();
   }
+  
+  
 }
