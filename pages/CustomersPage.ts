@@ -56,15 +56,13 @@ export class CustomersPage {
   }
 
   async gotoCustomersPage() {
-    await this.page.keyboard.press('Escape').catch(() => {});
-    await this.resetFilter();
-  
+    await this.page.goto('/index.html#/rail/pass');
+    
     const customersHeading = this.page.getByRole('heading', { name: 'Zákazníci' });
     const preukazyItem = this.page.locator('li:visible').filter({ hasText: 'Preukazy' }).first();
   
     await expect(customersHeading).toBeVisible({ timeout: 10000 });
     await customersHeading.click();
-    await this.page.waitForTimeout(300);
   
     await expect(preukazyItem).toBeVisible({ timeout: 10000 });
     await preukazyItem.click();
@@ -76,47 +74,33 @@ export class CustomersPage {
 
   async openLastNameFilter() {
     await this.lastNameHeader.first().hover();
+    await expect(this.lastNameFilterIcon.first()).toBeVisible();
     await this.lastNameFilterIcon.first().click();
-    await expect(this.valueInput).toBeVisible();
+    await this.valueInput.waitFor({ state: 'visible' });
   }
   
   async filterByLastName(lastName: string) {
-    const baseName = lastName.split('_')[0];
-  
     await this.openLastNameFilter();
-    await this.valueInput.fill(baseName);
+    await this.valueInput.fill(lastName);
   
     await expect(this.applyFilterButton).toBeEnabled();
     await this.applyFilterButton.click();
   }
 
-
   async resetFilter() {  
-   if (await this.resetBtn.isVisible().catch(() => false)) {
-      await this.resetBtn.click();
-    }
-
-    await this.page.keyboard.press('Escape').catch(() => {});
+    await this.resetBtn.click();
   }
 
   async expectCustomerInTable(lastName: string) {
-    const baseLastName = lastName.split('_')[0];
+    await this.filterByLastName(lastName);
   
-    await this.resetFilter();
-    await this.filterByLastName(baseLastName);
-  
-    await expect(this.page.getByText(baseLastName, { exact: false }).first()).toBeVisible({ timeout: 10000 });
+    await expect(this.page.getByText(lastName, { exact: false }).first()).toBeVisible({ timeout: 10000 });
   }
   
   async openCustomerByLastName(lastName: string) {
-    const baseLastName = lastName.split('_')[0];
+    await this.filterByLastName(lastName);
   
-    await this.resetFilter();
-    await this.filterByLastName(baseLastName);
-  
-    const row = this.page.locator('tr', {
-      has: this.page.locator('.table-body-td', { hasText: baseLastName })
-    }).first();
+    const row = this.page.locator('tr', {has: this.page.locator('.table-body-td', { hasText: lastName })}).first();
   
     await expect(row).toBeVisible({ timeout: 10000 });
     await row.hover();
@@ -149,15 +133,16 @@ export class CustomersPage {
   }
 
   async expectCustomerNotInTable(lastName: string) {
-    const baseLastName = lastName.split('_')[0];
-
     await this.resetFilter();
-    await this.filterByLastName(baseLastName);
+    await this.filterByLastName(lastName);
 
-    const row = this.page.locator('.table-body-td', { hasText: baseLastName });
+    const row = this.page.locator('.table-body-td', { hasText: lastName });
 
     await expect(row).toBeHidden();
   }
-  
+
+  async expectToastMessage(text: string) {
+    await expect(this.page.getByText(text)).toBeVisible();
+  } 
   
 }

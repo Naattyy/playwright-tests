@@ -8,5 +8,5 @@
       "types": ["node", "@playwright/test"],
       "lib": ["ES2020"]
     },
-    "include": ["tests", "playwright.config.ts"]
+    "include": ["tests", "playwright.config.ts", "tests/auth.setup.ts"]
   }

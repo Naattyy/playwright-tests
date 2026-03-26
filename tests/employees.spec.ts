@@ -1,15 +1,11 @@
 import test, { expect } from '../fixtures/basePages';
-import { employeesData } from '../data/employeesData';
-import { employeesForSelection } from '../data/employeesData';
-import { employeesForToggle } from '../data/employeesData';
+import { employeesData, employeesForSelection, employeesForToggle, employeeWithPhoto } from '../data/employeesData';
+
 
 test.describe('Employees', () => {
-    test.beforeEach(async ({ loginPage, page }) => {
-        await loginPage.gotoLoginPage();
-        await loginPage.login();
-        await expect(page).toHaveURL('/index.html#/rail/pass');
-    });
-
+  test.beforeEach(async ({ employeesPage }) => {
+    await employeesPage.gotoEmployeesPage();
+  });
     test('TC_03_Create 5 new employees', async ({ page, employeesPage }) => {
       for (const employee of employeesData) {
         await employeesPage.clickAddEmployee();
@@ -22,9 +18,34 @@ test.describe('Employees', () => {
         );
   
         await employeesPage.saveEmployee();
+        await employeesPage.expectToastMessage('Úspešne vytvorené');
   
         await expect(page.getByText(employee.lastName)).toBeVisible();
       }
+    });
+
+    test('TC_03.1_Create employee with photo', async ({ page, employeesPage }) => {
+        await employeesPage.clickAddEmployee();
+
+        await employeesPage.fillEmployeeForm(
+          employeeWithPhoto.birthCertificate,
+          employeeWithPhoto.firstName,
+          employeeWithPhoto.lastName,
+          employeeWithPhoto.birthDate
+        );
+
+        await employeesPage.uploadEmployeePhoto(employeeWithPhoto.photoPath);
+
+        await employeesPage.saveEmployee();
+        await employeesPage.clickCompressPhoto();
+        await employeesPage.expectToastMessage('Úspešne vytvorené');
+
+        await expect(page.getByText(employeeWithPhoto.lastName)).toBeVisible();
+
+        await employeesPage.deleteEmployeeByBirthCertificate(employeeWithPhoto.birthCertificate);
+        await employeesPage.expectToastMessage('Úspešne zmazané');
+  
+        await expect(page.locator('tr', { hasText: employeeWithPhoto.birthCertificate })).not.toBeVisible();
     });
   
     test('TC_04_Edit 2 employees', async ({ employeesPage }) => {
@@ -35,21 +56,20 @@ test.describe('Employees', () => {
         await employeesPage.editTitleBeforeName(employee.newTitle);
         await employeesPage.expectTitleBeforeNameValue(employee.newTitle);
         await employeesPage.saveEmployee();
+        await employeesPage.expectToastMessage('Úspešne uložené');
       }
     });
   
     test('TC_05_Delete 5 employees', async ({ page, employeesPage }) => {
-      test.setTimeout(60000);
-
       for (const employee of employeesData) {
         await employeesPage.deleteEmployeeByBirthCertificate(employee.birthCertificate);
+        await employeesPage.expectToastMessage('Úspešne zmazané');
   
         await expect(page.locator('tr', { hasText: employee.birthCertificate })).not.toBeVisible();
         }
     }); 
 
     test('TC_11_Export data', async ({ employeesPage }) => {
-
       const download = await employeesPage.exportCsv();
     
       const fileName = download.suggestedFilename();

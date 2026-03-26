@@ -14,6 +14,8 @@ export class EmployeesPage {
   exportButton: Locator;
   confirmExportButton: Locator;
   selectedItemsInfo: Locator;
+  photoInput: Locator;
+  compressButton: Locator;
 
   birthCertificateHeader: Locator;
   birthCertificateFilterIcon: Locator;
@@ -34,7 +36,9 @@ export class EmployeesPage {
     this.confirmDeleteButton = page.getByRole('button', { name: 'ZMAZAŤ' });
     this.exportButton = page.getByLabel('Export do csv');
     this.confirmExportButton = page.getByRole('button', { name: 'EXPORTOVAŤ' });
-    this.selectedItemsInfo = page.getByText('Vybraných položiek:');
+    this.selectedItemsInfo = page.getByText('Vybraných položiek:');   
+    this.photoInput = page.locator('input[type="file"]'); 
+    this.compressButton = page.getByRole('button', { name: 'KOMPRIMOVAŤ' });
 
     this.birthCertificateHeader = page.locator('div.table-header-td:has(h3:has-text("Rodné číslo"))');
     this.birthCertificateFilterIcon = this.birthCertificateHeader.locator('[data-testid="FilterAltIcon"]');
@@ -46,6 +50,22 @@ export class EmployeesPage {
   async clickAddEmployee() {
     await this.addButton.click();
   }
+
+  async gotoEmployeesPage() {
+  await this.page.goto('/index.html#/rail/pass');
+
+  const employeesMenuItem = this.page.getByRole('heading', { name: 'Zamestnanci a r. p.' });
+  const idCardsItem = this.page.locator('li').filter({ hasText: 'Preukazy' }).first();
+  const employeesHeading = this.page.getByRole('heading', { name: 'Zamestnanci' });
+
+  await expect(employeesMenuItem).toBeVisible();
+  await employeesMenuItem.click();
+
+  await expect(idCardsItem).toBeVisible();
+  await idCardsItem.click();
+
+  await expect(employeesHeading).toBeVisible();
+}
 
   async fillEmployeeForm(
     birthCertificate: string,
@@ -180,5 +200,18 @@ export class EmployeesPage {
   async expectNoItemsSelected() {
     await expect(this.selectedItemsInfo).toContainText('0 z');
   }
+
+  async expectToastMessage(text: string) {
+    await expect(this.page.getByText(text)).toBeVisible();
+  } 
+
+  async uploadEmployeePhoto(filePath: string) {
+    await this.photoInput.setInputFiles(filePath);
+  }
+
+  async clickCompressPhoto() {
+  await expect(this.compressButton).toBeVisible();
+  await this.compressButton.click();
+}
 
 }

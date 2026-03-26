@@ -1,12 +1,10 @@
 import test, { expect } from '../fixtures/basePages';
-import { filterData } from '../data/filterData';
+import { filterData, filterDataAdvanced } from '../data/filterData';
 
 test.describe('Filter', () => {
-    test.beforeEach(async ({ loginPage, page }) => {
-        await loginPage.gotoLoginPage();
-        await loginPage.login();
-        await expect(page).toHaveURL('/index.html#/rail/pass');
-    });
+    test.beforeEach(async ({ employeesPage }) => {
+    await employeesPage.gotoEmployeesPage();
+  });
 
     test("TC_09 - Filtering ID cards", async ({ page, filterPage }) => {
       const rodneCislo = filterData.rodneCislo;
@@ -14,6 +12,46 @@ test.describe('Filter', () => {
       await filterPage.filterByRodneCislo(rodneCislo);
         
       await expect(page.getByText(rodneCislo, { exact: true })).toBeVisible();    
+    });
+
+    test("TC_09.1 - Filter by Rodné číslo with advanced filter", async ({ page, filterPage }) => {
+      await filterPage.openFilter();
+
+      await filterPage.fillFilterRow(
+      filterDataAdvanced.first.column,
+      filterDataAdvanced.first.operation,
+      filterDataAdvanced.first.value,
+      0
+      );
+
+      await filterPage.applyFilter();
+
+      await expect(page.getByText(filterDataAdvanced.first.value, { exact: true })).toBeVisible();
+    });
+
+    test("TC_09.2 - Filter combinations", async ({ page, filterPage }) => {
+      await filterPage.openFilter();
+
+      await filterPage.fillFilterRow(
+      filterDataAdvanced.first.column,
+      filterDataAdvanced.first.operation,
+      filterDataAdvanced.first.value,
+      0
+      );
+
+      await filterPage.addOrCondition();
+
+      await filterPage.fillFilterRow(
+      filterDataAdvanced.second.column,
+      filterDataAdvanced.second.operation,
+      filterDataAdvanced.second.value,
+      1
+      );
+
+      await filterPage.applyFilter();
+
+      await expect(page.getByText(filterDataAdvanced.first.value, { exact: true })).toBeVisible();
+      await expect(page.getByText(filterDataAdvanced.second.value, { exact: true })).toBeVisible();
     });
 
     test("TC_10 - Reset filters in ID cards list", async ({ page, filterPage }) => {
@@ -27,5 +65,4 @@ test.describe('Filter', () => {
   
       await expect(filterPage.resetBtn).not.toBeVisible();  
     });
-
   });
