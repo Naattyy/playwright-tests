@@ -54,6 +54,21 @@ test.describe('Filter', () => {
       await expect(page.getByText(filterDataAdvanced.second.value, { exact: true })).toBeVisible();
     });
 
+    test("TC_09.3 - Filter by Rodné číslo - invalid data", async ({ page, filterPage }) => {
+      await filterPage.openFilter();
+
+      await filterPage.fillFilterRow(
+      filterDataAdvanced.first.column,
+      filterDataAdvanced.first.operation,
+      filterDataAdvanced.first.value2,
+      0
+      );
+
+      await filterPage.applyFilter();
+
+      await expect(page.getByText('Vybraných položiek: 0 z 0')).toBeVisible();
+    });
+
     test("TC_10 - Reset filters in ID cards list", async ({ page, filterPage }) => {
       const rodneCislo = filterData.rodneCislo;
 
