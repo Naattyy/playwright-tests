@@ -1,5 +1,11 @@
-import test, { expect } from '../fixtures/basePages';
-import { filterData, filterDataAdvanced } from '../data/filterData';
+import test, { expect } from '../../fixtures/basePages';
+import { filterData, filterDataAdvanced } from '../../data/filterData';
+
+test.use({
+  viewport: { width: 1920, height: 1080 },
+  trace: 'on-first-retry',
+  storageState: 'playwright/.auth/user.json',
+});
 
 test.describe('Filter', () => {
     test.beforeEach(async ({ employeesPage }) => {

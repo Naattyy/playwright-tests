@@ -1,5 +1,9 @@
-import test, { expect } from '../fixtures/basePages';
-import { customersData } from '../data/customersData';
+import test, { expect } from '../../fixtures/basePages';
+import { customersData } from '../../data/customersData';
+
+test.use({
+  storageState: 'playwright/.auth/user.json',
+});
 
 test.describe('Customers', () => {
 

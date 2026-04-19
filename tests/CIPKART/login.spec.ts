@@ -1,5 +1,5 @@
 import { defineConfig } from '@playwright/test';
-import test, { expect } from '../fixtures/basePages';
+import test, { expect } from '../../fixtures/basePages';
 
 
 test.describe('Login', () => {
@@ -10,7 +10,7 @@ test.describe('Login', () => {
     test('TC_01_Successful login', async ({ page, loginPage }) => {
     await loginPage.gotoLoginPage();
     await loginPage.login();
-    await expect(page).toHaveURL('/index.html#/rail/pass');
+    await expect(page).toHaveURL(`${process.env.BASE_URL}/index.html#/rail/pass`);
     });
 
     test('TC_01.1_Cannot login with valid username and invalid password', async ({ loginPage }) => {
@@ -30,7 +30,7 @@ test.describe('Login', () => {
     test('TC_01.3_Cannot login with empty fields', async ({ page, loginPage }) => {
         await loginPage.clickLoginButton();
 
-        await expect(page).toHaveURL('/index.html');
+        await expect(page).toHaveURL(`${process.env.BASE_URL}/index.html`);
         await expect(loginPage.loginButton).toBeVisible();
     });
 

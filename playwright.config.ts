@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig } from '@playwright/test';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -9,29 +9,29 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: 1,
   reporter: 'list',
+  timeout: 120000,
   
   use: {
-    baseURL: 'https://cipkartadmin-dev.kube8s.prosoft.sk',
+    baseURL: process.env.BASE_URL,
+    locale: 'sk-SK',
     ignoreHTTPSErrors: true,
     launchOptions: {
       slowMo: 500
     },
     trace: 'on-first-retry',
-    viewport: { width: 1920, height: 1080 },
   },
 
   projects: [
     {
       name: 'setup',
-      testMatch: 'tests/auth.setup.ts',
+      testMatch: '**/auth.setup.ts',
     },
     {
       name: 'chromium',
+      testMatch: '**/*.spec.ts',
       use: {
         browserName: 'chromium',
-        storageState: 'playwright/.auth/user.json',
       },
-      dependencies: ['setup'],
     },
   ],
 });

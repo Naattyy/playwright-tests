@@ -8,7 +8,7 @@ setup('authenticate', async ({ page }) => {
   await page.fill('[name="password"]', process.env.PASSWORD!);
   await page.click('.login-form-button');
 
-  await expect(page).toHaveURL('/index.html#/rail/pass');
+  await expect(page).toHaveURL(`${process.env.BASE_URL}/index.html#/rail/pass`);
 
   await page.context().storageState({ path: 'playwright/.auth/user.json' });
 });

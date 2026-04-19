@@ -1,6 +1,9 @@
-import test, { expect } from '../fixtures/basePages';
-import { employeesData, employeesForSelection, employeesForToggle, employeeWithPhoto } from '../data/employeesData';
+import test, { expect } from '../../fixtures/basePages';
+import { employeesData, employeesForSelection, employeesForToggle, employeeWithPhoto } from '../../data/employeesData';
 
+test.use({
+  storageState: 'playwright/.auth/user.json',
+});
 
 test.describe('Employees', () => {
   test.beforeEach(async ({ employeesPage }) => {
