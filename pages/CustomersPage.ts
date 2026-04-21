@@ -144,5 +144,4 @@ export class CustomersPage {
   async expectToastMessage(text: string) {
     await expect(this.page.getByText(text)).toBeVisible();
   } 
-  
 }

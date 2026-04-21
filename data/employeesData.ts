@@ -6,7 +6,7 @@ export const employeesData = [
     birthDate: '11.11.2027',
     newTitle: 'Ing.'
   },
- /*{
+ {
     birthCertificate: '020202/0951',
     firstName: 'Janka',
     lastName: 'Mrkvová',
@@ -33,7 +33,7 @@ export const employeesData = [
     lastName: 'Dubáková',
     birthDate: '15.03.1990',
     newTitle: 'PhDr.'
-  }*/
+  }
 ];
 
 export const employeesForSelection = [

@@ -148,75 +148,22 @@ test('TC_06 - Zrušenie konta', async ({ page }) => {
 
 test('TC_07 - Mail.tm API confirm account cancellation via email link', async ({ page }) => {
   const apiContext = await request.newContext({
-    baseURL: 'https://api.mail.tm',
+    baseURL: process.env.MAIL_TM_BASE_URL,
   });
+
+  const client = new MailTmClient(apiContext);
 
   const email = process.env.MAIL_TM_EMAIL!;
   const password = process.env.MAIL_TM_PASSWORD!;
 
-  const tokenRes = await apiContext.post('/token', {
-    data: {
-      address: email,
-      password: password,
-    },
-  });
-
-  const tokenData = await tokenRes.json();
-  const token = tokenData.token;
+  const token = await client.login(email, password);
   expect(token).toBeTruthy();
 
-  let cancelMail: any;
+  const cancelMail = await client.waitForCancellationMail(token);
+  const messageDetail = await client.getMessageDetail(token, cancelMail.id);
+  const cancelLink = client.extractCancellationLink(messageDetail.html);
 
-  for (let i = 0; i < 15; i++) {
-    const res = await apiContext.get('/messages', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const data = await res.json();
-    const messages = data['hydra:member'];
-
-    cancelMail = messages.find((m: any) => {
-      const subject = m.subject?.trim().toLowerCase() || '';
-      return subject === 'testste si istý, že si chcete zrušiť konto zssk id?';
-    });
-
-    if (cancelMail) break;
-
-    await new Promise(r => setTimeout(r, 3000));
-  }
-
-  expect(cancelMail).toBeTruthy();
-
-  const messageRes = await apiContext.get(`/messages/${cancelMail.id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  const messageDetail = await messageRes.json();
-
-  let cancelLink: string | null = null;
-  let html: string | undefined;
-
-  if (messageDetail.html) {
-    html = Array.isArray(messageDetail.html)
-      ? messageDetail.html[0]
-      : messageDetail.html;
-  }
-
-  if (typeof html === 'string') {
-    const matches = [...html.matchAll(/<a[^>]+href="([^"]+)"[^>]*>(.*?)<\/a>/gi)];
-
-    cancelLink = matches.find(m =>
-      m[2].trim().toLowerCase() === 'odkaz'
-    )?.[1] || null;
-  }
-
-  expect(cancelLink).toBeTruthy();
-
-  await page.goto(cancelLink!);
+  await page.goto(cancelLink);
 
   const notification = page.locator('.sup-notification__text');
   await notification.waitFor({ state: 'visible', timeout: 10000 });
