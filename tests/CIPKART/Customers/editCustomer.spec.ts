@@ -1,13 +1,13 @@
 import test from '../../../fixtures/basePages';
-import { customersData } from '../../../data/customersData';
+import { editCustomersData } from '../../../data/customersData';
 
 test.use({
   storageState: 'playwright/.auth/user.json',
 });
 
 test.describe('Edit Customer', () => {
-  customersData.forEach((customer) => {
-    test(`${customer.testCaseId}_Edit customer`, async ({ customersPage }) => {
+  editCustomersData.forEach((customer) => {
+    test(`${customer.testCaseId} @smoke Edit customer`, async ({ customersPage }) => {
       await customersPage.gotoCustomersPage();
 
       // setup - create customer

@@ -1,4 +1,4 @@
-export const customersData = [
+export const createCustomersData = [
   {
     testCaseId: 'TC_06',
     firstName: 'Ján',
@@ -8,6 +8,9 @@ export const customersData = [
     street: 'Kamenná',
     updatedStreet: 'Dlhá'
   },
+];
+
+export const editCustomersData = [
   {
     testCaseId: 'TC_07',
     firstName: 'Peter',
@@ -17,6 +20,9 @@ export const customersData = [
     street: 'Lesná',
     updatedStreet: 'Jarná'
   },
+];
+
+export const deleteCustomersData = [
   {
     testCaseId: 'TC_08',
     firstName: 'Eva',

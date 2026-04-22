@@ -27,8 +27,17 @@ export default defineConfig({
       testMatch: '**/auth.setup.ts',
     },
     {
+      name: 'smoke',
+      testMatch: '**/*.spec.ts',
+      grep: /@smoke/,
+      use: {
+        browserName: 'chromium',
+      },
+    },
+    {
       name: 'chromium',
       testMatch: '**/*.spec.ts',
+      grepInvert: /@smoke/,
       use: {
         browserName: 'chromium',
       },
