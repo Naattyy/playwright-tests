@@ -28,7 +28,11 @@ export default defineConfig({
     },
     {
       name: 'smoke',
+<<<<<<< HEAD
       testMatch: 'tests/CIPKART/Customers/createCustomer.spec.ts', 
+=======
+      testMatch: '**/*.spec.ts',
+>>>>>>> 3f05f5e (xx)
       grep: /@smoke/,
       use: {
         browserName: 'chromium',

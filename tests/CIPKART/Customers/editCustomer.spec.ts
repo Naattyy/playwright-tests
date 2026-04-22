@@ -6,7 +6,12 @@ test.use({
 });
 
 test.describe('Edit Customer', () => {
+<<<<<<< HEAD
   editCustomersData.forEach((customer) => {    test(`${customer.testCaseId} @smoke Edit customer`, async ({ customersPage }) => {
+=======
+  editCustomersData.forEach((customer) => {
+    test(`${customer.testCaseId} @smoke Edit customer`, async ({ customersPage }) => {
+>>>>>>> 3f05f5e (xx)
       await customersPage.gotoCustomersPage();
 
       // setup - create customer
