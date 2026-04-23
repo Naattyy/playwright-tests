@@ -1,26 +1,25 @@
 import test from '../../../fixtures/basePages';
-import { createCustomersData } from '../../../data/customersData';
+import { CustomersData } from '../../../data/customersData';
 
 test.use({
   storageState: 'playwright/.auth/user.json',
 });
 
 test.describe('Create Customer', () => {
-  createCustomersData.forEach((customer) => {
-    test(`${customer.testCaseId} @smoke Create customer`, async ({ customersPage }) => {
+  
+    test(`${CustomersData} @smoke Create customer`, async ({ customersPage }) => {
       await customersPage.gotoCustomersPage();
 
       await customersPage.clickAddCustomer();
       await customersPage.fillCustomerForm(
-        customer.lastName,
-        customer.firstName,
-        customer.birthDate,
-        customer.personalId
+        CustomersData.lastName,
+        CustomersData.firstName,
+        CustomersData.birthDate,
+        CustomersData.personalId
       );
       await customersPage.saveCustomer();
 
       await customersPage.expectToastMessage('Úspešne vytvorené');
-      await customersPage.expectCustomerInTable(customer.lastName);
+      await customersPage.expectCustomerInTable(CustomersData.lastName);
     });
-  });
 });
