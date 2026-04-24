@@ -4,7 +4,7 @@ dotenv.config();
 
 export default defineConfig({
   testDir: './tests',
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: 1,
@@ -28,15 +28,12 @@ export default defineConfig({
     },
     {
       name: 'smoke',
-      testMatch: [
-        'tests/CIPKART/Customers/createCustomer.spec.ts', 
-        'tests/CIPKART/Customers/editCustomer.spec.ts',
-        'tests/CIPKART/Customers/deleteCustomer.spec.ts',
-      ],
+      testMatch: 'tests/CIPKART/Customers/*.spec.ts',
       grep: /@smoke/,
+      workers: 1,
       use: {
         browserName: 'chromium',
-      },
+  },
     },
     {
       name: 'chromium',

@@ -6,7 +6,7 @@ test.use({
 });
 
 test.describe('Create Customer', () => {
-    test(`${CustomersData} @smoke Create customer`, async ({ customersPage }) => {
+    test(`${CustomersData.testCaseId} @smoke Create customer`, async ({ customersPage }) => {
       await customersPage.gotoCustomersPage();
 
       await customersPage.clickAddCustomer();
