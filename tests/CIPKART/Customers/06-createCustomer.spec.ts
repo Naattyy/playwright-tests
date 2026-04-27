@@ -5,7 +5,7 @@ test.use({
   storageState: 'playwright/.auth/user.json',
 });
 
-test.describe('Create Customer', () => {
+test.describe('TC_06_Create_Customer', () => {
     test(`${CustomersData.testCaseId} @smoke Create customer`, async ({ customersPage }) => {
       await customersPage.gotoCustomersPage();
 
