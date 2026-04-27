@@ -28,7 +28,10 @@ export default defineConfig({
     },
     {
       name: 'smoke',
-      testMatch: 'tests/CIPKART/Customers/*.spec.ts',
+      testMatch: [
+            'tests/CIPKART/Customers/*.spec.ts',
+            'tests/CIPKART/Employees/*.spec.ts',
+      ],
       grep: /@smoke/,
       workers: 1,
       use: {

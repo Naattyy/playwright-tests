@@ -1,6 +1,10 @@
 import test, { expect } from '../../../fixtures/basePages';
 import { employeesData, employeeWithPhoto } from '../../../data/employeesData';
 
+test.use({
+  storageState: 'playwright/.auth/user.json',
+});
+
 test.describe('TC_03_Create_Employee', () => {
     test(`${employeesData.testCaseId} @smoke @employees Create employee`, async ({ employeesPage, page }) => {
       await employeesPage.clickAddEmployee();

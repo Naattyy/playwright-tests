@@ -5,6 +5,10 @@ test.use({
   storageState: 'playwright/.auth/user.json',
 });
 
+test.beforeEach(async ({ employeesPage }) => {
+  await employeesPage.gotoEmployeesPage();
+});
+
 test('TC_12_Select multiple ID cards', async ({ employeesPage }) => {
       for (const employee of employeesForSelection) {
         await employeesPage.selectEmployeeByName(employee);
