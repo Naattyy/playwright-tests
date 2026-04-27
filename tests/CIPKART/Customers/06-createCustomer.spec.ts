@@ -6,7 +6,7 @@ test.use({
 });
 
 test.describe('TC_06_Create_Customer', () => {
-    test(`${CustomersData.testCaseId} @smoke Create customer`, async ({ customersPage }) => {
+    test(`${CustomersData.testCaseId} @smoke @customers Create customer`, async ({ customersPage }) => {
       await customersPage.gotoCustomersPage();
 
       await customersPage.clickAddCustomer();

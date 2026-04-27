@@ -6,7 +6,7 @@ test.use({
 });
 
 test.describe('TC_08_Delete_Customer', () => {
-  test(`${CustomersData.testCaseId} @smoke Delete customer`, async ({ customersPage }) => {
+  test(`${CustomersData.testCaseId} @smoke @customers Delete customer`, async ({ customersPage }) => {
       await customersPage.gotoCustomersPage();
 
       await customersPage.deleteCustomerByLastName(CustomersData.lastName);

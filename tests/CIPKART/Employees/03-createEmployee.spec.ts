@@ -7,6 +7,7 @@ test.use({
 
 test.describe('TC_03_Create_Employee', () => {
     test(`${employeesData.testCaseId} @smoke @employees Create employee`, async ({ employeesPage, page }) => {
+      await employeesPage.gotoEmployeesPage();
       await employeesPage.clickAddEmployee();
   
         await employeesPage.fillEmployeeForm(

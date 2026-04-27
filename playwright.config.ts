@@ -36,7 +36,25 @@ export default defineConfig({
       workers: 1,
       use: {
         browserName: 'chromium',
-  },
+      },
+    },
+    {
+      name: 'smoke-employees',
+      testMatch: 'tests/CIPKART/Employees/*.spec.ts',
+      grep: /@smoke/,
+      workers: 1,
+      use: {
+        browserName: 'chromium',
+      },
+    },
+    {
+      name: 'smoke-customers',
+      testMatch: 'tests/CIPKART/Customers/*.spec.ts',
+      grep: /@smoke/,
+      workers: 1,
+      use: {
+        browserName: 'chromium',
+      },
     },
     {
       name: 'chromium',

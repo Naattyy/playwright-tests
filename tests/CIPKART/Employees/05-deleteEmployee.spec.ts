@@ -8,6 +8,7 @@ test.use({
 test.describe('TC_05_Delete_Employee', () => {
     test(`${employeesData.testCaseId} @smoke @employees Delete employee`, async ({ employeesPage, page }) => {
 
+        await employeesPage.gotoEmployeesPage();
         await employeesPage.deleteEmployeeByBirthCertificate(employeesData.birthCertificate);
         await employeesPage.expectToastMessage('Úspešne zmazané');
   

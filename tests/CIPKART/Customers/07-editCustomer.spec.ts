@@ -6,7 +6,7 @@ test.use({
 });
 
 test.describe('TC_07_Edit_Customer', () => {
-    test(`${CustomersData.testCaseId} @smoke Edit customer`, async ({ customersPage }) => {
+    test(`${CustomersData.testCaseId} @smoke @customers Edit customer`, async ({ customersPage }) => {
       await customersPage.gotoCustomersPage();
 
       await customersPage.openCustomerByLastName(CustomersData.lastName);
