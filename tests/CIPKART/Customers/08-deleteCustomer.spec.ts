@@ -1,0 +1,17 @@
+import test from '../../../fixtures/basePages';
+import { CustomersData } from '../../../data/customersData';
+
+test.use({
+  storageState: 'playwright/.auth/user.json',
+});
+
+test.describe('TC_08_Delete_Customer', () => {
+  test(`${CustomersData.testCaseId} @smoke @customers Delete customer`, async ({ customersPage }) => {
+      await customersPage.gotoCustomersPage();
+
+      await customersPage.deleteCustomerByLastName(CustomersData.lastName);
+
+      await customersPage.expectToastMessage('Úspešne zmazané');
+      await customersPage.expectCustomerNotInTable(CustomersData.lastName);
+  });
+});

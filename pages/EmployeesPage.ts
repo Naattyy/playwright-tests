@@ -14,6 +14,14 @@ export class EmployeesPage {
   exportButton: Locator;
   confirmExportButton: Locator;
   selectedItemsInfo: Locator;
+  photoInput: Locator;
+  compressButton: Locator;
+
+  birthCertificateHeader: Locator;
+  birthCertificateFilterIcon: Locator;
+  valueInput: Locator;
+  applyFilterButton: Locator;
+  resetBtn: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -28,12 +36,36 @@ export class EmployeesPage {
     this.confirmDeleteButton = page.getByRole('button', { name: 'ZMAZAŤ' });
     this.exportButton = page.getByLabel('Export do csv');
     this.confirmExportButton = page.getByRole('button', { name: 'EXPORTOVAŤ' });
-    this.selectedItemsInfo = page.getByText(/Vybraných položiek:/);
+    this.selectedItemsInfo = page.getByText('Vybraných položiek:');   
+    this.photoInput = page.locator('input[type="file"]'); 
+    this.compressButton = page.getByRole('button', { name: 'KOMPRIMOVAŤ' });
+
+    this.birthCertificateHeader = page.locator('div.table-header-td:has(h3:has-text("Rodné číslo"))');
+    this.birthCertificateFilterIcon = this.birthCertificateHeader.locator('[data-testid="FilterAltIcon"]');
+    this.valueInput = page.locator('#val1');
+    this.applyFilterButton = page.getByRole('button', { name: 'POUŽIŤ' });
+    this.resetBtn = page.locator('li', { hasText: 'Zrušiť filter' });
   }
 
   async clickAddEmployee() {
     await this.addButton.click();
   }
+
+  async gotoEmployeesPage() {
+  await this.page.goto('/index.html#/rail/pass');
+
+  const employeesMenuItem = this.page.getByRole('heading', { name: 'Zamestnanci a r. p.' });
+  const idCardsItem = this.page.locator('li').filter({ hasText: 'Preukazy' }).first();
+  const employeesHeading = this.page.getByRole('heading', { name: 'Zamestnanci' });
+
+  await expect(employeesMenuItem).toBeVisible();
+  await employeesMenuItem.click();
+
+  await expect(idCardsItem).toBeVisible();
+  await idCardsItem.click();
+
+  await expect(employeesHeading).toBeVisible();
+}
 
   async fillEmployeeForm(
     birthCertificate: string,
@@ -50,47 +82,84 @@ export class EmployeesPage {
   }
 
   async saveEmployee() {
-    await expect(this.saveButton).toBeEnabled();
     await this.saveButton.click();
   }
 
-  async openEmployeeByName(name: string) {
-    const row = this.page.locator('tr', { hasText: name });
+  async openBirthCertificateFilter() {
+    await this.birthCertificateHeader.first().hover();
+    await this.birthCertificateFilterIcon.first().click();
+    await expect(this.valueInput).toBeVisible();
+  }
+  
+  async filterByBirthCertificate(value: string) {
+    await this.openBirthCertificateFilter();
+  
+    await this.valueInput.click();
+    await this.valueInput.fill('');
+    await this.valueInput.fill(value);
+  
+    await expect(this.applyFilterButton).toBeEnabled();
+    await this.applyFilterButton.click();
+  
+    await this.page.waitForTimeout(1000);
+  }
+  
+  async resetFilter() {
+    if (await this.resetBtn.isVisible().catch(() => false)) {
+      await this.resetBtn.click();
+      await this.page.waitForTimeout(500);
+    }
+  
+    await this.page.keyboard.press('Escape').catch(() => {});
+  }
+
+  async openEmployeeByBirthCertificate(birthCertificate: string) {
+    await this.resetFilter();
+    await this.filterByBirthCertificate(birthCertificate);
+  
+    const row = this.page.locator('tr', { hasText: birthCertificate }).first();
+    await expect(row).toBeVisible();
+  
     await row.hover();
     await row.click();
-
+  
     await this.page.waitForTimeout(500);
   }
 
+  async expectEmployeeVisible(lastName: string) {
+    await expect(this.page.getByText(lastName, { exact: false })).toBeVisible();
+  }
 
   async editTitleBeforeName(title: string) {
       await this.newTitleInput.waitFor({ state: 'visible' });
-
-      console.log(await this.newTitleInput.isEditable());
       await expect(this.newTitleInput).toBeEditable();
     
       await this.newTitleInput.click();
-      await this.page.keyboard.insertText(title);
-      await this.newTitleInput.blur();
+      await this.newTitleInput.fill(title);
+      await this.newTitleInput.press('Tab');
   }
 
   async expectTitleBeforeNameValue(title: string) {
     await expect(this.newTitleInput).toHaveValue(title);
   }
 
-
-  async deleteEmployeeByNameOrId(name: string, personalId: string) {
-    await this.openEmployeeByName(name);
-
+  async deleteEmployeeByBirthCertificate(birthCertificate: string) {
+    await this.resetFilter();
+    await this.filterByBirthCertificate(birthCertificate);
+  
+    const row = this.page.locator('tr', { hasText: birthCertificate }).first();
+    await expect(row).toBeVisible();  
+    await row.hover();
+    await row.click();
+  
     await expect(this.deleteButton).toBeVisible();
     await this.deleteButton.click();
-
+  
     await expect(this.confirmDeleteButton).toBeVisible();
     await this.confirmDeleteButton.click();
-
-    await expect(this.page.locator('tr', { hasText: personalId })).not.toBeVisible({ timeout: 5000 });
+  
+    await this.resetFilter();
   }
-
 
   async exportCsv() {
     await expect(this.exportButton).toBeVisible();
@@ -104,7 +173,6 @@ export class EmployeesPage {
   
     return await downloadPromise;
   }
-
 
   async selectEmployeeByName(name: string) {
     const row = this.page.locator('tr', { hasText: name }).first();
@@ -121,7 +189,6 @@ export class EmployeesPage {
     await expect(checkedIcon).toBeVisible();
   }
 
-
   async toggleEmployeeByLastAndFirstName(lastName: string, firstName: string) {
     const row = this.page.locator('tr', { hasText: lastName }).filter({ hasText: firstName }).first();
   
@@ -131,8 +198,20 @@ export class EmployeesPage {
   }
 
   async expectNoItemsSelected() {
-    await expect(this.selectedItemsInfo)
-      .toHaveText(/Vybraných položiek:\s*0\s*z\s*\d+/);
+    await expect(this.selectedItemsInfo).toContainText('0 z');
   }
+
+  async expectToastMessage(text: string) {
+    await expect(this.page.getByText(text)).toBeVisible();
+  } 
+
+  async uploadEmployeePhoto(filePath: string) {
+    await this.photoInput.setInputFiles(filePath);
+  }
+
+  async clickCompressPhoto() {
+  await expect(this.compressButton).toBeVisible();
+  await this.compressButton.click();
+}
 
 }

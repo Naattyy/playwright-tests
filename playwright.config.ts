@@ -1,81 +1,84 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig } from '@playwright/test';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
-
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
 export default defineConfig({
   testDir: './tests',
-  /* Run tests in files in parallel */
-  fullyParallel: true,
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : 3,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [['list'], ['html']],
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  workers: 1,
+  reporter: 'list',
+  timeout: 120000,
+  
   use: {
-    browserName: 'chromium',
+    baseURL: process.env.BASE_URL,
+    locale: 'sk-SK',
     ignoreHTTPSErrors: true,
-    /* Base URL to use in actions like `await page.goto('')`. */
-    //baseURL: 'http://localhost:3000',
-
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+    launchOptions: {
+      slowMo: 500
+    },
     trace: 'on-first-retry',
   },
 
-  /* Configure projects for major browsers */
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: 'cipkart-setup',
+      testMatch: 'tests/CIPKART/auth.setup.ts',
     },
-
-    //{
-     //  name: 'firefox',
-     //  use: { ...devices['Desktop Firefox'] },
-     //},
-
-     //{
-      // name: 'webkit',
-      // use: { ...devices['Desktop Safari'] },
-     //},
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
+    {
+      name: 'cipkart',
+      testMatch: 'tests/CIPKART/**/*.spec.ts',
+      dependencies: ['cipkart-setup'],
+      use: {
+        browserName: 'chromium',
+      },
+    },
+    {
+      name: 'zssk',
+      testMatch: 'tests/ZSSK/**/*.spec.ts',
+      use: {
+        browserName: 'chromium',
+        baseURL: process.env.KONTO_URL,
+      },
+    },
+    {
+      name: 'smoke',
+      testMatch: [
+            'tests/CIPKART/Customers/*.spec.ts',
+            'tests/CIPKART/Employees/*.spec.ts',
+      ],
+      grep: /@smoke/,
+      workers: 1,
+      use: {
+        browserName: 'chromium',
+      },
+    },
+    {
+      name: 'smoke-employees',
+      testMatch: 'tests/CIPKART/Employees/*.spec.ts',
+      grep: /@smoke/,
+      workers: 1,
+      use: {
+        browserName: 'chromium',
+      },
+    },
+    {
+      name: 'smoke-customers',
+      testMatch: 'tests/CIPKART/Customers/*.spec.ts',
+      grep: /@smoke/,
+      workers: 1,
+      use: {
+        browserName: 'chromium',
+      },
+    },
+    {
+      name: 'chromium',
+      testMatch: '**/*.spec.ts',
+      grepInvert: /@smoke/,
+      use: {
+        browserName: 'chromium',
+      },
+    },
   ],
-
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://localhost:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
 });

@@ -9,6 +9,11 @@
   "scripts": {
     "test": "playwright test",
     "test:ui": "playwright test --ui",
+    "test:cipkart": "playwright test --project=cipkart",
+    "test:zssk": "playwright test --project=zssk",
+    "test:smoke": "playwright test --project=smoke",
+    "test:smoke:employees": "playwright test --project=smoke-employees",
+    "test:smoke:customers": "playwright test --project=smoke-customers",
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug"
   },
@@ -18,6 +23,9 @@
   "type": "commonjs",
   "devDependencies": {
     "@playwright/test": "^1.58.2",
-    "@types/node": "^25.2.2"
+    "@types/node": "^25.5.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.3.1"
   }
 }
