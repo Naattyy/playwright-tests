@@ -23,8 +23,24 @@ export default defineConfig({
 
   projects: [
     {
-      name: 'setup',
-      testMatch: '**/auth.setup.ts',
+      name: 'cipkart-setup',
+      testMatch: 'tests/CIPKART/auth.setup.ts',
+    },
+    {
+      name: 'cipkart',
+      testMatch: 'tests/CIPKART/**/*.spec.ts',
+      dependencies: ['cipkart-setup'],
+      use: {
+        browserName: 'chromium',
+      },
+    },
+    {
+      name: 'zssk',
+      testMatch: 'tests/ZSSK/**/*.spec.ts',
+      use: {
+        browserName: 'chromium',
+        baseURL: process.env.KONTO_URL,
+      },
     },
     {
       name: 'smoke',

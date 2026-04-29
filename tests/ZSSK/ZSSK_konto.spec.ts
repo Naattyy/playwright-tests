@@ -139,7 +139,7 @@ test('TC_06 - Zrušenie konta', async ({ page }) => {
 
   await page.getByRole('button', { name: 'Zrušiť moje ZSSK konto' }).click();
 
-  await page.locator('input[formcontrolname="reason"]').fill('Automated test - account deletion');
+  await page.locator('input[formcontrolname="reason"]').fill('Automated test PROSOFT- account deletion');
 
   await page.getByRole('button', { name: 'Pokračovať' }).click();
 
