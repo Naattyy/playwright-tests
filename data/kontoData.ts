@@ -1,6 +1,6 @@
 export const kontoData = {
-  firstName: 'Emília',
-  lastName: 'Hrušková',
+  firstName: 'EMÍLIA',
+  lastName: 'HRUŠKOVÁ',
   phone: '912345678',
   birthDate: '1998-09-25',
   street: 'Jarná 5',
@@ -9,8 +9,8 @@ export const kontoData = {
 
 export const orderData = {
   user: {
-    firstName: 'Emília',
-    lastName: 'Hrušková',
+    firstName: 'EMÍLIA',
+    lastName: 'HRUŠKOVÁ',
     email: 'emiliahruskova62@deltajohnsons.com',
   },
   address: {
