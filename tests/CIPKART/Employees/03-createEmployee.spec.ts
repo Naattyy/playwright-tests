@@ -22,8 +22,8 @@ test.describe('TC_03_Create_Employee', () => {
   
         await expect(page.getByText(employeesData.lastName)).toBeVisible();
       });
-
     test('TC_03.1_Create employee with photo', async ({ page, employeesPage }) => {
+        await employeesPage.gotoEmployeesPage();
         await employeesPage.clickAddEmployee();
 
         await employeesPage.fillEmployeeForm(

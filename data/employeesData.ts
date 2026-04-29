@@ -13,7 +13,7 @@ export const employeesData = {
   firstName: 'Shrek',
   lastName: 'Tester',
   birthDate: '01.01.2000',
-  photoPath: 'tests/shrek1.jpg'
+  photoPath: 'tests/CIPKART/shrek1.jpg'
 };
 
 export const employeesForSelection = [
