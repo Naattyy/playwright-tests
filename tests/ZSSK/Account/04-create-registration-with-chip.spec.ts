@@ -1,6 +1,6 @@
 import { test } from '@playwright/test';
 import { OrderPage } from '../../../pages/ZSSK_konto';
-import { orderData } from '../../../data/kontoData';
+import { orderData } from '../../../data/employeesData';
 
 test.beforeEach(async ({ page }) => {
   await page.goto(process.env.KONTO_URL!);

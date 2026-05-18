@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { RegistrationPage } from '../../../pages/ZSSK_konto';
-import { kontoData } from '../../../data/kontoData';
+import { employeesData } from '../../../data/employeesData';
 
 test('TC_01 - Registrácia', async ({ page }) => {
   const registration = new RegistrationPage(page);
@@ -13,9 +13,9 @@ test('TC_01 - Registrácia', async ({ page }) => {
     process.env.TEST_PASSWORD!
   );
 
-  await registration.fillPersonalInfoStep(kontoData);
+  await registration.fillPersonalInfoStep(employeesData);
 
-  await registration.fillBirthDateStep(kontoData.birthDate);
+  await registration.fillBirthDateStep(employeesData.birthDate);
   await registration.fillIdAndSubmitStep();
 
   await expect(page.locator('text=Takmer hotovo')).toBeVisible();

@@ -6,6 +6,7 @@ type RegistrationData = {
   phone: string;
   street: string;
   city: string;
+  citySearch?: string;
 };
 
 type DeliveryUser = {
@@ -39,6 +40,18 @@ export class RegistrationPage {
     await this.page.getByRole('option', { name: optionName }).click();
   }
 
+  private async selectAutocompleteOption(input: string, searchValue: string, optionText: string) {
+    const field = this.page.locator(input).first();
+    const option = this.page.getByRole('option', { name: optionText, exact: true });
+
+    await field.click();
+    await field.clear();
+    await field.pressSequentially(searchValue, { delay: 80 });
+    await expect(option).toBeVisible({ timeout: 15000 });
+    await option.click();
+    await expect(field).toHaveValue(optionText);
+  }
+
   async goto() {
     await this.page.goto(process.env.KONTO_URL!);
   }
@@ -55,6 +68,23 @@ export class RegistrationPage {
     await this.page.locator('[data-cy="login-email"]').fill(email);
     await this.page.locator('[data-cy="login-pwd"]').fill(password);
     await this.page.locator('[data-cy="login-submit"]').click();
+  }
+
+  async expectDashboard() {
+    await expect(this.page).toHaveURL(/dashboard/);
+  }
+
+  async getZsskId() {
+    const zsskId = (
+      await this.page
+        .locator('.d-inline-flex.align-items-center', { hasText: 'ZSSK konto' })
+        .locator('.profile-preview__placeholder p')
+        .textContent()
+    )?.trim();
+
+    expect(zsskId).toMatch(/^\d+$/);
+
+    return zsskId!;
   }
 
   async expectInvalidCredentials() {
@@ -78,10 +108,11 @@ export class RegistrationPage {
       await this.page.getByText('Žena', { exact: true }).click();
 
       await this.page.fill('[data-cy="contact-street"]', data.street);
-      await this.page.fill('.p-autocomplete-input', data.city);
-      const options = this.page.locator('.p-autocomplete-panel .p-autocomplete-item');
-      await options.first().waitFor();
-      await options.first().click();
+      await this.selectAutocompleteOption(
+        '.p-autocomplete-input',
+        data.citySearch ?? data.city,
+        data.city
+      );
 
       await this.page.locator('.combobox').nth(2).click();
       await this.page.locator('.combobox-list__item').first().click();
@@ -92,11 +123,14 @@ export class RegistrationPage {
     });
   }
 
-  async fillBirthDateStep(_date: string) {
+  async fillBirthDateStep(date: string) {
     await test.step('Vyplnenie dátumu narodenia', async () => {
-      await this.selectComboboxOption(0, '25');
-      await this.selectComboboxOption(1, '9');
-      await this.selectComboboxOption(2, '1998');
+      const [day, month, year] = date.split('.');
+
+      await this.page.getByRole('textbox', { name: 'DD' }).fill(day);
+      await this.page.getByRole('textbox', { name: 'MM' }).fill(month);
+      await this.page.getByRole('textbox', { name: 'RRRR' }).fill(year);
+      await expect(this.continueButton()).toBeEnabled();
       await this.continue();
     });
   }
@@ -177,7 +211,11 @@ export class OrderPage {
 
   async selectCard(card: string) {
     await test.step(`Výber karty ${card}`, async () => {
-      const cardOption = this.page.locator('.referer__head').filter({ hasText: card }).first();
+      const cardOption = this.page
+        .locator('.referer__head')
+        .filter({ hasText: new RegExp(`^\\s*${card}\\s*$`) });
+
+      await expect(cardOption).toHaveCount(1);
       await cardOption.click();
     });
   }
@@ -237,10 +275,52 @@ export class OrderPage {
 
 
   async selectProductWithOption(product: string, option: string) {
-    await this.page.click(`text=${product}`);
-    await this.page.locator(`label:has-text("${option}")`).click();
-    await this.continue();
+    await test.step(`Výber produktu ${product} s voľbou ${option}`, async () => {
+      const licencesUrl = this.page.url();
+      const escapedProduct = product.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const productCard = this.page
+        .locator('h1', { hasText: 'Nový zľavový preukaz' })
+        .locator('xpath=following-sibling::div[contains(@class, "cards-wrap")]')
+        .locator('.card-shell')
+        .filter({
+          has: this.page
+            .locator('.referer__head')
+            .filter({ hasText: new RegExp(`^\\s*${escapedProduct}\\s*$`) }),
+        });
+
+      const waitUntil = Date.now() + 10 * 60 * 1000;
+
+      while (Date.now() < waitUntil) {
+        if (await productCard.isVisible().catch(() => false)) {
+          break;
+        }
+
+        await this.page.reload({ waitUntil: 'domcontentloaded', timeout: 60000 }).catch(async () => {
+          await this.page.goto(licencesUrl, { waitUntil: 'domcontentloaded', timeout: 60000 }).catch(() => {});
+        });
+        await this.page.waitForTimeout(30000);
+      }
+
+      if (!(await productCard.isVisible().catch(() => false))) {
+        const availableProducts = await this.page.locator('.referer__head').allTextContents();
+
+        throw new Error(
+          `Produkt "${product}" sa nezobrazil ani po 10 minútach refreshovania. ` +
+          `Dostupné produkty: ${availableProducts.map((name) => name.trim()).join(', ') || 'žiadne'}`
+        );
+      }
+
+      await expect(productCard).toHaveCount(1);
+      await productCard.click();
+
+      const optionLocator = this.page.locator(`label:has-text("${option}")`);
+      await expect(optionLocator).toBeVisible({ timeout: 15000 });
+      await optionLocator.click();
+
+      await this.continue();
+    });
   }
+
 
   async skipCardStep() {
     await this.page.locator('button:has-text("Preskočiť")').click();

@@ -11,6 +11,7 @@
     "test:ui": "playwright test --ui",
     "test:cipkart": "playwright test --project=cipkart",
     "test:zssk": "playwright test --project=zssk",
+    "test:connection": "playwright test --project=CONNECTION",
     "test:smoke": "playwright test --project=smoke",
     "test:smoke:employees": "playwright test --project=smoke-employees",
     "test:smoke:customers": "playwright test --project=smoke-customers",

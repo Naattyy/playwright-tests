@@ -6,7 +6,7 @@ test.use({
 });
 
 test.describe('TC_04_Edit_Employee', () => {
-    test(`${employeesData.testCaseId} @smoke @employees Edit employee`, async ({ employeesPage }) => {
+    test(`${employeesData.testCaseId} @smoke @employees Edit employee`, async ({ employeesPage, page }) => {
 
         await employeesPage.gotoEmployeesPage();
         await employeesPage.openEmployeeByBirthCertificate(employeesData.birthCertificate);
@@ -14,5 +14,7 @@ test.describe('TC_04_Edit_Employee', () => {
         await employeesPage.expectTitleBeforeNameValue(employeesData.newTitle);
         await employeesPage.saveEmployee();
         await employeesPage.expectToastMessage('Úspešne uložené');
+  
+        await expect(page.getByText(employeesData.lastName)).toBeVisible();
     });
 });
