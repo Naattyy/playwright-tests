@@ -7,10 +7,10 @@ type AppName = 'cipkart' | 'zssk';
 type ConnectionStep = {
   name: string;
   app: AppName;
-  testMatch: string | string[];
+  testMatch: string;
 };
 
-const slowMo = Number(process.env.SLOW_MO ?? 500);
+const slowMo = Number(process.env.SLOW_MO ?? 1000);
 
 const appBaseURL: Record<AppName, string | undefined> = {
   cipkart: process.env.BASE_URL,
@@ -21,68 +21,41 @@ const chromium = {
   browserName: 'chromium' as const,
 };
 
-const connectionSteps: ConnectionStep[] = [
-  {
-    name: 'connection-cipkart-tc03',
-    app: 'cipkart',
-    testMatch: 'tests/CIPKART/Employees/03-createEmployee.spec.ts',
-  },
-  {
-    name: 'connection-zssk-tc01',
-    app: 'zssk',
-    testMatch: 'tests/ZSSK/Account/01-registration-ZSSK-ID.spec.ts',
-  },
-  {
-    name: 'connection-zssk-tc02',
-    app: 'zssk',
-    testMatch: 'tests/ZSSK/Account/02-email-activation.spec.ts',
-  },
-  {
-    name: 'connection-zssk-tc03',
-    app: 'zssk',
-    testMatch: 'tests/ZSSK/Account/03-login.spec.ts',
-  },
-  {
-    name: 'connection-cipkart-tc15',
-    app: 'cipkart',
-    testMatch: 'tests/CIPKART/Employees/15-addPass.spec.ts',
-  },
-  {
-    name: 'connection-cipkart-tc16',
-    app: 'cipkart',
-    testMatch: 'tests/CIPKART/Employees/16-copy-zssk-id.spec.ts',
-  },
-  {
-    name: 'connection-zssk-tc05',
-    app: 'zssk',
-    testMatch: 'tests/ZSSK/Account/05-create-registration-without-chip.spec.ts',
-  },
-  {
-    name: 'connection-cipkart-tc17',
-    app: 'cipkart',
-    testMatch: 'tests/CIPKART/Employees/17-registration-control.spec.ts',
-  },
-  {
-    name: 'connection-zssk-tc06',
-    app: 'zssk',
-    testMatch: 'tests/ZSSK/Account/06-cancel-account.spec.ts',
-  },
-  {
-    name: 'connection-zssk-tc07',
-    app: 'zssk',
-    testMatch: 'tests/ZSSK/Account/07-confirm-cancellation.spec.ts',
-  },
-  {
-    name: 'connection-zssk-tc08',
-    app: 'zssk',
-    testMatch: 'tests/ZSSK/Account/08-cancelled-account-login.spec.ts',
-  },
-  {
-    name: 'CONNECTION',
-    app: 'cipkart',
-    testMatch: 'tests/CIPKART/Employees/05-deleteEmployee.spec.ts',
-  },
+const connectionTests = [
+  'tests/CIPKART/Employees/03-createEmployee.spec.ts',
+  'tests/ZSSK/Account/01-registration-ZSSK-ID.spec.ts',
+  'tests/ZSSK/Account/02-email-activation.spec.ts',
+  'tests/ZSSK/Account/03-login.spec.ts',
+  'tests/CIPKART/Employees/15-addPass.spec.ts',
+  'tests/CIPKART/Employees/16-copy-zssk-id.spec.ts',
+  'tests/ZSSK/Account/05-create-registration-without-chip.spec.ts',
+  'tests/CIPKART/Employees/17-registration-control.spec.ts',
+  'tests/ZSSK/Account/06-cancel-account.spec.ts',
+  'tests/ZSSK/Account/07-confirm-cancellation.spec.ts',
+  'tests/ZSSK/Account/08-cancelled-account-login.spec.ts',
+  'tests/CIPKART/Employees/18-delete-life-pass.spec.ts',
+  'tests/CIPKART/Employees/05-deleteEmployee.spec.ts',
 ];
+
+const getConnectionApp = (testMatch: string): AppName =>
+  testMatch.includes('/ZSSK/') ? 'zssk' : 'cipkart';
+
+const getConnectionName = (testMatch: string, index: number) => {
+  if (index === connectionTests.length - 1) {
+    return 'CONNECTION';
+  }
+
+  const app = getConnectionApp(testMatch);
+  const testCaseNumber = testMatch.split('/').pop()?.match(/^\d+/)?.[0];
+
+  return `connection-${app}-tc${testCaseNumber}`;
+};
+
+const connectionSteps: ConnectionStep[] = connectionTests.map((testMatch, index) => ({
+  name: getConnectionName(testMatch, index),
+  app: getConnectionApp(testMatch),
+  testMatch,
+}));
 
 const connectionProjects = connectionSteps.map((step, index) => ({
   name: step.name,

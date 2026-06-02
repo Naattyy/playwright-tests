@@ -278,5 +278,22 @@ async addLifePass() {
   await this.railPassSaveButton.click();
 }
 
+async deleteLifePass() {
+  const employeeDialog = this.page.getByRole('dialog');
+  const lifePassTab = employeeDialog
+    .locator('li')
+    .filter({ hasText: /^\s*Nárok na ŽP\s*$/ })
+    .first();
+
+  await expect(lifePassTab).toBeVisible();
+  await lifePassTab.click();
+
+  await expect(this.deleteButton).toBeVisible();
+  await this.deleteButton.click();
+
+  await expect(this.confirmDeleteButton).toBeVisible();
+  await this.confirmDeleteButton.click();
+}
+
 
 }
