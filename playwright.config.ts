@@ -112,36 +112,41 @@ export default defineConfig({
         baseURL: process.env.KONTO_URL,
       },
     },
+    
     {
       name: 'smoke',
       testMatch: [
-            'tests/CIPKART/Customers/*.spec.ts',
-            'tests/CIPKART/Employees/*.spec.ts',
+        'tests/CIPKART/03-Employees/*.spec.ts',
+        'tests/CIPKART/04-Customers/*.spec.ts',
       ],
       grep: /@smoke/,
       workers: 1,
+      dependencies: ['cipkart-setup'],
       use: {
         ...chromium,
       },
     },
     {
       name: 'smoke-employees',
-      testMatch: 'tests/CIPKART/Employees/*.spec.ts',
+      testMatch: 'tests/CIPKART/03-Employees/*.spec.ts',
       grep: /@smoke/,
       workers: 1,
+      dependencies: ['cipkart-setup'],
       use: {
         ...chromium,
-      },
+    },
     },
     {
       name: 'smoke-customers',
-      testMatch: 'tests/CIPKART/Customers/*.spec.ts',
+      testMatch: 'tests/CIPKART/04-Customers/*.spec.ts',
       grep: /@smoke/,
       workers: 1,
+      dependencies: ['cipkart-setup'],
       use: {
         ...chromium,
       },
     },
+
     ...connectionProjects,
     {
       name: 'chromium',

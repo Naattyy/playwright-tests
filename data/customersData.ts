@@ -1,5 +1,5 @@
 export const CustomersData = {
-    testCaseId: 'TC_06',
+    testCaseId: 'TC_04',
     firstName: 'JÁN',
     lastName: 'MRKVA',
     birthDate: '01.01.1990',

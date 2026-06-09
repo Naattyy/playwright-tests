@@ -1,5 +1,14 @@
-export const employeesData = {
-  testCaseId: 'TC_03',
+export const employeeForFirstTests = {
+  testCaseId: 'TC_03.1',
+  birthCertificate: '060606/1234',
+  firstName: 'TEST',
+  lastName: 'ZAMESTNANEC',
+  birthDate: '06.06.2000',
+  newTitle: 'Mgr.',
+};
+
+export const employeeForZSSKData = {
+  testCaseId: 'TC_03.5',
     birthCertificate: '050505/0954',
     firstName: 'EMÍLIA',
     lastName: 'HRUŠKOVÁ',
@@ -12,7 +21,7 @@ export const employeesData = {
   };
 
   export const employeeWithPhoto = {
-  testCaseId: 'TC_03.1',
+  testCaseId: 'TC_03.4',
   birthCertificate: '999999/9999',
   firstName: 'Shrek',
   lastName: 'Tester',
@@ -62,13 +71,13 @@ export const orderNoCardData = {
 };
 
 export const employeesForSelection = [
-  'Hraškova',
-  'Pikachu',
-  'Vtáčik'
+  'TEST1',
+  'TEST2',
+  'TEST3'
 ];
 
 export const employeesForToggle = [
-  { lastName: 'Hraškova', firstName: 'Janka' },
-  { lastName: 'Pikachu', firstName: 'Pika' },
-  { lastName: 'VTÁČIK', firstName: 'LEONARD' }
+  { lastName: 'ŠKODA VAGONKA', firstName: 'TEST1' },
+  { lastName: 'ŠKODA VAGONKA', firstName: 'TEST2' },
+  { lastName: 'ŠKODA VAGONKA', firstName: 'TEST3' }
 ];
