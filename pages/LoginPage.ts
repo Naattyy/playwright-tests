@@ -16,11 +16,11 @@ export class LoginPage {
     }
 
     async gotoLoginPage() {
-        await this.page.goto('https://cipkartadmin-dev.kube8s.prosoft.sk/index.html');
+        await this.page.goto('/');
     }
 
     async enterValidUsername() {
-        await this.userNameInput.fill('P130');
+        await this.userNameInput.fill(process.env.USERNAME!);
     }
 
     async enterInValidUsername() {
@@ -28,7 +28,7 @@ export class LoginPage {
     }
 
     async enterValidPassword() {
-        await this.passwordInput.fill('aaaaa');
+        await this.passwordInput.fill(process.env.PASSWORD!);
     }
 
     async enterInValidPassword() {
@@ -38,10 +38,10 @@ export class LoginPage {
     async clickLoginButton() {
         await this.loginButton.click();
     }
-
+    
     async login() {
-        await this.userNameInput.fill('P130');
-        await this.passwordInput.fill('aaaaa');
+        await this.userNameInput.fill(process.env.USERNAME!);
+        await this.passwordInput.fill(process.env.PASSWORD!);
         await this.loginButton.click();
     }
 }

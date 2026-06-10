@@ -1,0 +1,130 @@
+{
+  "cookies": [
+    {
+      "name": "JSESSIONID",
+      "value": "EC5B752930654CB31032CC5D957609BC",
+      "domain": "cipkartadmin-dev.kube8s.prosoft.sk",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "session-state-aut",
+      "value": "3fb56cf4-b775-4042-b5eb-2d0b80d5fb7b",
+      "domain": "konto.test.zssk.sk",
+      "path": "/",
+      "expires": 1776594175.427911,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "JSESSIONID",
+      "value": "1ICisJeyXXW_JazDuoBzkEIY3GGwEcQ30D7AadXuTchc4LWAS4i0!-973727999",
+      "domain": "konto.test.zssk.sk",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_gid",
+      "value": "GA1.2.953004591.1776550976",
+      "domain": ".zssk.sk",
+      "path": "/",
+      "expires": 1776637375,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_gat_UA-89941930-8",
+      "value": "1",
+      "domain": ".zssk.sk",
+      "path": "/",
+      "expires": 1776551035,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga",
+      "value": "GA1.1.1698801212.1776550967",
+      "domain": ".zssk.sk",
+      "path": "/",
+      "expires": 1811110979.547196,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga_8CPHP4FGNM",
+      "value": "GS2.1.s1776550966$o1$g1$t1776550982$j44$l0$h0",
+      "domain": ".zssk.sk",
+      "path": "/",
+      "expires": 1811110982.07391,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://konto.test.zssk.sk",
+      "localStorage": [
+        {
+          "name": "lang",
+          "value": "sk"
+        },
+        {
+          "name": "access_token_stored_at",
+          "value": "1776550986484"
+        },
+        {
+          "name": "nonce",
+          "value": "TkZwbUFmcFNvdVBHd3JsenlYbEozX1hifkFkZGw0ZkNSSy5lWndXdlVnajRF"
+        },
+        {
+          "name": "session_state",
+          "value": "undefined"
+        },
+        {
+          "name": "PKCE_verifier",
+          "value": "ZjNLdlo0dn5KRFE4d1JSWGp3UnV0QkFzb3laUE9OY3NLLTE0aDJJdWZPOE1w"
+        },
+        {
+          "name": "access_token",
+          "value": "eyJraWQiOiJpYW0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJlbWlsaWFocnVza292YTYyQGRlbHRham9obnNvbnMuY29tIiwiYXVkIjoiemsiLCJuYmYiOjE3NzY1NTA5ODEsImFjY291bnRfaWQiOjQ0MzUwNSwic2NvcGUiOlsib3BlbmlkIl0sImlzcyI6Imh0dHBzOi8va29udG8udGVzdC56c3NrLnNrL2F1dCIsImV4cCI6MTc3NjU1MTg4MSwiaWF0IjoxNzc2NTUwOTgxfQ.FwXH6dFgHKfV5dYVxvtoxFaFnJwLhgb1yDc1G4nagL5Rjp3dfrdLHYeNBqAEC0b-BiCbS4J5RvfZuJ4uxIyN6-uNMLyjeVhoPUh5Z1cfEdegkuwzOEm-XsSYwA73ed_QsssvRt_PFnto5o1I-E28FB5zIC883C81gVzXw0Xxz1N0nrNQJAiU8eUekE-HEapp9s98N3BwmXg13kl5QUVYRF06qNLGXExPRFOnulhP7NoKThoI0XqFr7pfs-_ZMku45r3CftunUwbIbA4vusbrydk4H1mnSJEdvndbE9loCHEfH8Fbt0c2_8Gzp-2MiMVXMzOWh4DadY9V_Vd2FkNl6w"
+        },
+        {
+          "name": "granted_scopes",
+          "value": "[\"openid\"]"
+        },
+        {
+          "name": "expires_at",
+          "value": "1776551886485"
+        }
+      ]
+    },
+    {
+      "origin": "https://cipkartadmin-dev.kube8s.prosoft.sk",
+      "localStorage": [
+        {
+          "name": "username",
+          "value": "POP-test PTT"
+        },
+        {
+          "name": "authenticated",
+          "value": "true"
+        },
+        {
+          "name": "state",
+          "value": "{\"filter\":{\"filterArr\":[]},\"order\":{\"orderArr\":[]},\"simpleFilter\":{\"simpleFilterArr\":[]},\"columnOrder\":{\"orderArr\":[]},\"export\":{\"export\":false},\"dialog\":{\"value\":false}}"
+        }
+      ]
+    }
+  ]
+}

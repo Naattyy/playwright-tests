@@ -1,81 +1,160 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig } from '@playwright/test';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+type AppName = 'cipkart' | 'zssk';
 
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
+type ConnectionStep = {
+  name: string;
+  app: AppName;
+  testMatch: string;
+};
+
+const slowMo = Number(process.env.SLOW_MO ?? 1000);
+
+const appBaseURL: Record<AppName, string | undefined> = {
+  cipkart: process.env.BASE_URL,
+  zssk: process.env.KONTO_URL,
+};
+
+const chromium = {
+  browserName: 'chromium' as const,
+};
+
+const connectionTests = [
+  'tests/CIPKART/Employees/03-createEmployee.spec.ts',
+  'tests/ZSSK/Account/01-registration-ZSSK-ID.spec.ts',
+  'tests/ZSSK/Account/02-email-activation.spec.ts',
+  'tests/ZSSK/Account/03-login.spec.ts',
+  'tests/CIPKART/Employees/15-addPass.spec.ts',
+  'tests/CIPKART/Employees/16-copy-zssk-id.spec.ts',
+  'tests/ZSSK/Account/05-create-registration-without-chip.spec.ts',
+  'tests/CIPKART/Employees/17-registration-control.spec.ts',
+  'tests/ZSSK/Account/06-cancel-account.spec.ts',
+  'tests/ZSSK/Account/07-confirm-cancellation.spec.ts',
+  'tests/ZSSK/Account/08-cancelled-account-login.spec.ts',
+  'tests/CIPKART/Employees/18-delete-life-pass.spec.ts',
+  'tests/CIPKART/Employees/05-deleteEmployee.spec.ts',
+];
+
+const getConnectionApp = (testMatch: string): AppName =>
+  testMatch.includes('/ZSSK/') ? 'zssk' : 'cipkart';
+
+const getConnectionName = (testMatch: string, index: number) => {
+  if (index === connectionTests.length - 1) {
+    return 'CONNECTION';
+  }
+
+  const app = getConnectionApp(testMatch);
+  const testCaseNumber = testMatch.split('/').pop()?.match(/^\d+/)?.[0];
+
+  return `connection-${app}-tc${testCaseNumber}`;
+};
+
+const connectionSteps: ConnectionStep[] = connectionTests.map((testMatch, index) => ({
+  name: getConnectionName(testMatch, index),
+  app: getConnectionApp(testMatch),
+  testMatch,
+}));
+
+const connectionProjects = connectionSteps.map((step, index) => ({
+  name: step.name,
+  testMatch: step.testMatch,
+  dependencies: [index === 0 ? 'cipkart-setup' : connectionSteps[index - 1].name],
+  use: {
+    ...chromium,
+    baseURL: appBaseURL[step.app],
+  },
+}));
+
 export default defineConfig({
   testDir: './tests',
-  /* Run tests in files in parallel */
-  fullyParallel: true,
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : 3,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [['list'], ['html']],
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  workers: 1,
+  reporter: 'list',
+  timeout: 120000,
+  expect: {
+    timeout: 15000,
+  },
+  
   use: {
-    browserName: 'chromium',
+    baseURL: process.env.BASE_URL,
+    locale: 'sk-SK',
     ignoreHTTPSErrors: true,
-    /* Base URL to use in actions like `await page.goto('')`. */
-    //baseURL: 'http://localhost:3000',
-
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+    actionTimeout: 30000,
+    navigationTimeout: 60000,
+    launchOptions: {
+      slowMo,
+    },
     trace: 'on-first-retry',
   },
 
-  /* Configure projects for major browsers */
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: 'cipkart-setup',
+      testMatch: 'tests/CIPKART/auth.setup.ts',
+    },
+    {
+      name: 'cipkart',
+      testMatch: 'tests/CIPKART/**/*.spec.ts',
+      dependencies: ['cipkart-setup'],
+      use: {
+        ...chromium,
+      },
+    },
+    {
+      name: 'zssk',
+      testMatch: 'tests/ZSSK/**/*.spec.ts',
+      use: {
+        ...chromium,
+        baseURL: process.env.KONTO_URL,
+      },
+    },
+    
+    {
+      name: 'smoke',
+      testMatch: [
+        'tests/CIPKART/03-Employees/*.spec.ts',
+        'tests/CIPKART/04-Customers/*.spec.ts',
+      ],
+      grep: /@smoke/,
+      workers: 1,
+      dependencies: ['cipkart-setup'],
+      use: {
+        ...chromium,
+      },
+    },
+    {
+      name: 'smoke-employees',
+      testMatch: 'tests/CIPKART/03-Employees/*.spec.ts',
+      grep: /@smoke/,
+      workers: 1,
+      dependencies: ['cipkart-setup'],
+      use: {
+        ...chromium,
+    },
+    },
+    {
+      name: 'smoke-customers',
+      testMatch: 'tests/CIPKART/04-Customers/*.spec.ts',
+      grep: /@smoke/,
+      workers: 1,
+      dependencies: ['cipkart-setup'],
+      use: {
+        ...chromium,
+      },
     },
 
-    //{
-     //  name: 'firefox',
-     //  use: { ...devices['Desktop Firefox'] },
-     //},
-
-     //{
-      // name: 'webkit',
-      // use: { ...devices['Desktop Safari'] },
-     //},
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
+    ...connectionProjects,
+    {
+      name: 'chromium',
+      testMatch: '**/*.spec.ts',
+      grepInvert: /@smoke/,
+      use: {
+        ...chromium,
+      },
+    },
   ],
-
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://localhost:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
 });
