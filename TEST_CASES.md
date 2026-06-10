@@ -2,7 +2,7 @@
 
 ## CIPKART_ADMIN
 
-| Test Case ID    | TC_01.1                                   |
+|Test Case ID     | TC_01.1                                   |
 |-----------------|-------------------------------------------|
 | Test Title      | Prihlásenie používateľa s platnými údajmi |
 | Test Data       | Meno: P130<br>Heslo: aaaaa                |
@@ -16,7 +16,9 @@
 3. Zadaj heslo
 4. Klikni na tlačidlo **Prihlásiť sa**
 
-| Test Case ID    | TC_01.2.                                  |
+
+
+|Test Case ID     | TC_01.2                                   |
 |-----------------|-------------------------------------------|
 | Test Title      | Prihlásenie používateľa s neplatným heslom|
 | Test Data       | Meno: P130<br>Heslo: nesprávne            |
