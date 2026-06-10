@@ -22,19 +22,17 @@ const chromium = {
 };
 
 const connectionTests = [
-  'tests/CIPKART/Employees/03-createEmployee.spec.ts',
-  'tests/ZSSK/Account/01-registration-ZSSK-ID.spec.ts',
-  'tests/ZSSK/Account/02-email-activation.spec.ts',
-  'tests/ZSSK/Account/03-login.spec.ts',
-  'tests/CIPKART/Employees/15-addPass.spec.ts',
-  'tests/CIPKART/Employees/16-copy-zssk-id.spec.ts',
-  'tests/ZSSK/Account/05-create-registration-without-chip.spec.ts',
-  'tests/CIPKART/Employees/17-registration-control.spec.ts',
-  'tests/ZSSK/Account/06-cancel-account.spec.ts',
-  'tests/ZSSK/Account/07-confirm-cancellation.spec.ts',
-  'tests/ZSSK/Account/08-cancelled-account-login.spec.ts',
-  'tests/CIPKART/Employees/18-delete-life-pass.spec.ts',
-  'tests/CIPKART/Employees/05-deleteEmployee.spec.ts',
+  'tests/CIPKART/03-Employees/03.5-add-pass.spec.ts',
+  'tests/ZSSK/01-Registration/01.1-registration-ZSSK-ID.spec.ts',
+  'tests/ZSSK/01-Registration/01.2-email-activation.spec.ts',
+  'tests/ZSSK/02-Login/02.1-login.spec.ts',
+  'tests/CIPKART/03-Employees/03.6-copy-zssk-id.spec.ts',
+  'tests/ZSSK/02-Login/02.3-create-registration-without-chip.spec.ts',
+  'tests/CIPKART/03-Employees/03.7-registration-control.spec.ts',
+  'tests/ZSSK/03-Delete/03.1-cancel-account.spec.ts',
+  'tests/ZSSK/03-Delete/03.2-confirm-cancellation.spec.ts',
+  'tests/ZSSK/03-Delete/03.3-cancelled-account-login.spec.ts',
+  'tests/CIPKART/03-Employees/03.8-delete-pass.spec.ts',
 ];
 
 const getConnectionApp = (testMatch: string): AppName =>
