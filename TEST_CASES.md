@@ -17,13 +17,13 @@
 4. Klikni na tlačidlo **Prihlásiť sa**
 <br>
 <br>
-<br>
+
 | Test Case ID | TC_01.2 |
 |:-------------|:---------|
 | Test Title      | Prihlásenie používateľa s neplatným heslom|
 | Test Data       | Meno: P130<br>Heslo: nesprávne            |
 | Precondition    | Používateľ je zaregistrovaný v systéme    |
-| Expected Result | Systém zobrazí chybovú hlášku ,,Nesprávne meno alebo heslo” <br> Používateľ nebude prihlásený                       |
+| Expected Result | Systém zobrazí chybovú hlášku ,,Nesprávne meno alebo heslo” <br> Používateľ nebude prihlásený                                             |
 
 ### Test Steps
 
@@ -33,4 +33,4 @@
 4. Klikni na tlačidlo **Prihlásiť sa**
 <br>
 <br>
-<br>
+
