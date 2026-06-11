@@ -44,7 +44,11 @@ const getConnectionName = (testMatch: string, index: number) => {
   }
 
   const app = getConnectionApp(testMatch);
-  const testCaseNumber = testMatch.split('/').pop()?.match(/^\d+/)?.[0];
+  const testCaseNumber = testMatch
+    .split('/')
+    .pop()
+    ?.match(/^\d+(?:\.\d+)?/)?.[0]
+    .replace('.', '-');
 
   return `connection-${app}-tc${testCaseNumber}`;
 };
