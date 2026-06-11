@@ -85,6 +85,7 @@ export default defineConfig({
     baseURL: process.env.BASE_URL,
     locale: 'sk-SK',
     ignoreHTTPSErrors: true,
+    headless: false,
     actionTimeout: 30000,
     navigationTimeout: 60000,
     launchOptions: {
